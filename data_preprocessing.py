@@ -79,8 +79,8 @@ for valPathX in valList:
     for idx in range(lenNormZ):
         sliceX = dataNormX[:, :, idx]
         sliceY = dataNormY[:, :, idx]
-        savenameX = valFolderX + "X_" + filenameX + "_{0:03d}".format(idx)
-        savenameY = valFolderY + "Y_" + filenameY + "_{0:03d}".format(idx)
+        savenameX = valFolderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".tiff"
+        savenameY = valFolderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".tiff"
         tiffX = Image.fromarray(sliceX)
         tiffY = Image.fromarray(sliceY)
         tiffX.save(savenameX)
