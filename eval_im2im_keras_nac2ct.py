@@ -54,7 +54,7 @@ def execute():
     numpy.save("results.npy", results)
 
     print('model predict')
-    y_hat = model.evaluate(test_gen, batch_size=batch_size, verbose=1, return_dict=True, use_multiprocessing=False)
+    y_hat = model.predict(test_gen, batch_size=batch_size, verbose=1, return_dict=True, use_multiprocessing=False)
     numpy.save("y_hat.npy", y_hat)
     # model.save(model_name + '_model.h5')
 
