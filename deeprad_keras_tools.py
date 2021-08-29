@@ -118,7 +118,7 @@ class TensorBoardIm2ImCallback(Callback):
         super(TensorBoardIm2ImCallback, self).__init__()
         self.X = X
         self.Y = Y
-        self.writer = tensorflow.summary.SummaryWriter
+        self.writer = tensorflow.summary.create_file_writer(log_dir)
 
     def make_image(self, img_data):
         """
@@ -151,10 +151,17 @@ class TensorBoardIm2ImCallback(Callback):
         summary_str = []
         
         Y_ = self.model.predict( self.X )
+
+        with self.writer.as_default():
+            tensorflow.summary.scalar("epoch", epoch)
+            tensorflow.summary.scalar("Y_", np.squeeze(Y_))
+            if epoch < 1: # these images do not change, so let's only write them once
+                tensorflow.summary.scalar("Y", np.squeeze(Y))
+                tensorflow.summary.scalar("X", np.squeeze(sliceX))
+
+        # summary_str.append(tensorflow.Summary.Value(tag='Y_', image=self.make_image( np.squeeze(Y_) )))
+        # if epoch < 1: # these images do not change, so let's only write them once
+        #     summary_str.append(tensorflow.Summary.Value(tag='Y', image=self.make_image( np.squeeze(self.Y) )))
+        #     summary_str.append(tensorflow.Summary.Value(tag='X', image=self.make_image( np.squeeze(self.X) )))
         
-        summary_str.append(tensorflow.Summary.Value(tag='Y_', image=self.make_image( np.squeeze(Y_) )))
-        if epoch < 1: # these images do not change, so let's only write them once
-            summary_str.append(tensorflow.Summary.Value(tag='Y', image=self.make_image( np.squeeze(self.Y) )))
-            summary_str.append(tensorflow.Summary.Value(tag='X', image=self.make_image( np.squeeze(self.X) )))
-        
-        self.writer.add_summary( tensorflow.Summary(value = summary_str), epoch )
+        # self.writer.add_summary( tensorflow.Summary(value = summary_str), epoch )
