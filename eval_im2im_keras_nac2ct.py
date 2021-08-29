@@ -52,6 +52,10 @@ def execute():
     print('model eval')
     results = model.evaluate(test_gen, batch_size=batch_size, verbose=1, return_dict=True)
     numpy.save("results.npy", results)
+
+    print('model predict')
+    y_hat = model.evaluate(test_gen, batch_size=batch_size, verbose=1, return_dict=True, use_multiprocessing=False)
+    numpy.save("yhat.npy", yhat)
     # model.save(model_name + '_model.h5')
 
 if __name__ == "__main__": 
