@@ -74,7 +74,7 @@ for package in [packageTest, packageVal, packageTrain]:
     folderY = package[2]
     print("-"*25, package[3], "-"*25)
 
-    for pathX in valList:
+    for pathX in fileList:
         print(pathX)
         pathY = pathX.replace("NPR", "CT")
         filenameX = os.path.basename(pathX)[4:7]
