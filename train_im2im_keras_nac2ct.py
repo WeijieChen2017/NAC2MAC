@@ -64,7 +64,7 @@ def execute():
                 use_multiprocessing=True,
                 max_queue_size=20,
                 workers=4,
-                callbacks=[history, modelCheckpoint, tensorboard, tensorboardimage] )
+                callbacks=[history, modelCheckpoint, tensorboard] )#, tensorboardimage
 
     model.save(model_name + '_model.h5')
 
