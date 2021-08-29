@@ -118,7 +118,7 @@ class TensorBoardIm2ImCallback(Callback):
         super(TensorBoardIm2ImCallback, self).__init__()
         self.X = X
         self.Y = Y
-        self.writer = tensorflow.summary.SummaryWriter.init()
+        self.writer = tensorflow.summary.SummaryWriter
 
     def make_image(self, img_data):
         """
