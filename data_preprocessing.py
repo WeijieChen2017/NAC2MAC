@@ -29,8 +29,8 @@ testFolderY = "./data_train/Y/test/"
 valFolderX = "./data_train/X/val/"
 valFolderY = "./data_train/Y/val/"
 
-for folderName in [trainFolderX, testFolderX, folderX,
-                   trainFolderY, testFolderY, folderY]:
+for folderName in [trainFolderX, testFolderX, valFolderX,
+                   trainFolderY, testFolderY, valFolderY]:
     if not os.path.exists(folderName):
         os.makedirs(folderName)
 
@@ -64,7 +64,7 @@ print('-'*50)
 startZ = 0.45
 endZ = 0.75
 
-packageVal = [valList, folderX, folderY, "Validation"]
+packageVal = [valList, valFolderX, valFolderY, "Validation"]
 packageTest = [testList, testFolderX, testFolderY, "Test"]
 packageTrain = [trainList, trainFolderX, trainFolderY, "Train"]
 
@@ -82,8 +82,8 @@ for package in [packageTest, packageVal, packageTrain]:
         dataX = nib.load(pathX).get_fdata()
         dataY = nib.load(pathY).get_fdata()
         lenZ = dataX.shape[2]
-        dataNormX = normX(dataX[int(lenZ*startZ):int(lenZ*endZ)])
-        dataNormY = normY(dataY[int(lenZ*startZ):int(lenZ*endZ)])
+        dataNormX = normX(dataX[:, :, int(lenZ*startZ):int(lenZ*endZ)])
+        dataNormY = normY(dataY[:, :, int(lenZ*startZ):int(lenZ*endZ)])
         lenNormZ = dataNormX.shape[2]
         for idx in range(lenNormZ):
             sliceX = dataNormX[:, :, idx]
