@@ -26,11 +26,11 @@ trainFolderX = "./data_train/X/train/"
 trainFolderY = "./data_train/Y/train/"
 testFolderX = "./data_train/X/test/"
 testFolderY = "./data_train/Y/test/"
-valFolderX = "./data_train/X/val/"
-valFolderY = "./data_train/Y/val/"
+folderX = "./data_train/X/val/"
+folderY = "./data_train/Y/val/"
 
-for folderName in [trainFolderX, testFolderX, valFolderX,
-                   trainFolderY, testFolderY, valFolderY]:
+for folderName in [trainFolderX, testFolderX, folderX,
+                   trainFolderY, testFolderY, folderY]:
     if not os.path.exists(folderName):
         os.makedirs(folderName)
 
@@ -47,7 +47,7 @@ fileList = list(fileList)
 
 valList = fileList[:int(len(fileList)*valRatio)]
 valList.sort()
-testList = fileList[:-int(len(fileList)*testRatio)]
+testList = fileList[-int(len(fileList)*testRatio):]
 testList.sort()
 trainList = list(set(fileList) - set(valList) - set(testList))
 trainList.sort()
@@ -64,37 +64,33 @@ print('-'*50)
 startZ = 0.45
 endZ = 0.75
 
-print("-"*25, "Validation", "-"*25)
-for valPathX in valList:
-    print(valPathX)
-    valPathY = valPathX.replace("NPR", "CT")
-    filenameX = os.path.basename(valPathX)[4:7]
-    filenameY = os.path.basename(valPathY)[3:6]
-    dataX = nib.load(valPathX).get_fdata()
-    dataY = nib.load(valPathY).get_fdata()
-    lenZ = dataX.shape[2]
-    dataNormX = normX(dataX[int(lenZ*startZ):int(lenZ*endZ)])
-    dataNormY = normY(dataY[int(lenZ*startZ):int(lenZ*endZ)])
-    lenNormZ = dataNormX.shape[2]
-    for idx in range(lenNormZ):
-        sliceX = dataNormX[:, :, idx]
-        sliceY = dataNormY[:, :, idx]
-        savenameX = valFolderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".tiff"
-        savenameY = valFolderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".tiff"
-        tiffX = Image.fromarray(sliceX)
-        tiffY = Image.fromarray(sliceY)
-        tiffX.save(savenameX)
-        tiffY.save(savenameY)
-        # print(savenameX)
-        # print(savenameY)
+packageVal = [valList, folderX, folderY, "Validation"]
+packageTest = [testList, testFolderX, testFolderY, "Test"]
+packageTrain = [trainList, trainFolderX, trainFolderY, "Train"]
 
+for package in [packageTest, packageVal, packageTrain]:
+    fileList = package[0]
+    folderX = package[1]
+    folderY = package[2]
+    print("-"*25, package[3], "-"*25)
 
-# for train_name in train_list:
-#     train_nameX = folderX+"/"+train_name
-#     train_nameY = folderY+"/"+train_name.replace("NPR", "CT")
-#     cmdX = "mv "+train_nameX+" "+train_folderX
-#     cmdY = "mv "+train_nameY+" "+train_folderY
-#     print(cmdX)
-#     print(cmdY)
-#     os.system(cmdX)
-#     os.system(cmdY)
+    for pathX in valList:
+        print(pathX)
+        pathY = pathX.replace("NPR", "CT")
+        filenameX = os.path.basename(pathX)[4:7]
+        filenameY = os.path.basename(pathY)[3:6]
+        dataX = nib.load(pathX).get_fdata()
+        dataY = nib.load(pathY).get_fdata()
+        lenZ = dataX.shape[2]
+        dataNormX = normX(dataX[int(lenZ*startZ):int(lenZ*endZ)])
+        dataNormY = normY(dataY[int(lenZ*startZ):int(lenZ*endZ)])
+        lenNormZ = dataNormX.shape[2]
+        for idx in range(lenNormZ):
+            sliceX = dataNormX[:, :, idx]
+            sliceY = dataNormY[:, :, idx]
+            savenameX = folderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".tiff"
+            savenameY = folderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".tiff"
+            tiffX = Image.fromarray(sliceX)
+            tiffY = Image.fromarray(sliceY)
+            tiffX.save(savenameX)
+            tiffY.save(savenameY)
