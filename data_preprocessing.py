@@ -1,8 +1,20 @@
 from PIL import Image
-
+import nibabel as nib
 import numpy as np
 import glob
 import os
+
+def normX(data):
+    data[data<0] = 0
+    data[data>6000] = 6000
+    data = data / 6000
+    return data
+
+def normY(data):
+    data[data<-1000] = -1000
+    data[data>3000] = 3000
+    data = (data + 1000) / 4000
+    return data
 
 folderX = "./data_train/NPR_SRC/"
 folderY = "./data_train/CT_SRC/"
@@ -48,15 +60,24 @@ print('-'*50)
 print("Testing list: ", testList)
 print('-'*50)
 
-# for valid_name in valid_list:
-#     valid_nameX = folderX+"/"+valid_name
-#     valid_nameY = folderY+"/"+valid_name.replace("NPR", "CT")
-#     cmdX = "mv "+valid_nameX+" "+valid_folderX
-#     cmdY = "mv "+valid_nameY+" "+valid_folderY
-#     print(cmdX)
-#     print(cmdY)
-#     os.system(cmdX)
-#     os.system(cmdY)
+# save each raw file as tiff image
+for valPathX in valList:
+    valPathY = valPathX.replace("NPR", "CT")
+    filenameX = os.path.basename(valPathX)[4:7]
+    filenameY = os.path.basename(valPathY)[3:6]
+    dataX = nib.load(valPathX).get_fdata()
+    dataY = nib.load(valPathY).get_fdata()
+    dataNormX = normX(dataX)
+    dataNormY = normY(dataY)
+    lenZ = dataX.shape[2]
+    for idx in range(lenZ):
+        sliceX = dataNormX[:, :, idx]
+        sliceY = dataNormY[:, :, idx]
+        savenameX = valFolderX + "X_" + filenameX + "_{0:03d}".format(idx)
+        savenameY = valFolderY + "Y_" + filenameY + "_{0:03d}".format(idx)
+        print(savenameX)
+        print(savenameY)
+
 
 # for train_name in train_list:
 #     train_nameX = folderX+"/"+train_name
@@ -67,5 +88,3 @@ print('-'*50)
 #     print(cmdY)
 #     os.system(cmdX)
 #     os.system(cmdY)
-
-# return [train_folderX, train_folderY, valid_folderX, valid_folderY]
