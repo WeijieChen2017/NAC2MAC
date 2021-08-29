@@ -26,8 +26,8 @@ trainFolderX = "./data_train/X/train/"
 trainFolderY = "./data_train/Y/train/"
 testFolderX = "./data_train/X/test/"
 testFolderY = "./data_train/Y/test/"
-folderX = "./data_train/X/val/"
-folderY = "./data_train/Y/val/"
+valFolderX = "./data_train/X/val/"
+valFolderY = "./data_train/Y/val/"
 
 for folderName in [trainFolderX, testFolderX, folderX,
                    trainFolderY, testFolderY, folderY]:
