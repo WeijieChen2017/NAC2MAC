@@ -17,10 +17,6 @@ import Unet
 
 tensorflow.keras.backend.set_image_data_format('channels_last')
 
-gpus = tensorflow.config.experimental.list_physical_devices('GPU')
-tensorflow.config.experimental.set_memory_growth(gpus[0], True)
-
-
 def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
@@ -45,7 +41,7 @@ def execute():
     print('creating model')
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=16,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
     model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
-    model.compile(optimizer=Adam(lr=1e-4), loss=smooth_L1_loss, metrics=[smooth_L1_loss,losses.mean_squared_error,losses.mean_absolute_error])
+    model.compile(optimizer=Adam(learning_rate=1e-4), loss=smooth_L1_loss, metrics=[smooth_L1_loss,losses.mean_squared_error,losses.mean_absolute_error])
     model.summary()
 
     print('creating data generators')
@@ -62,13 +58,13 @@ def execute():
     tensorboardimage = deeprad_keras_tools.TensorBoardIm2ImCallback(log_dir=tblogdir,X=X_progress,Y=Y_progress)
 
     print('fitting model')
-    model.fit_generator( train_gen,
-                        validation_data=val_gen,
-                        epochs=num_epochs,
-                        use_multiprocessing=True,
-                        max_queue_size=20,
-                        workers=4,
-                        callbacks=[history, modelCheckpoint, tensorboard, tensorboardimage] )
+    model.fit(  train_gen,
+                validation_data=val_gen,
+                epochs=num_epochs,
+                use_multiprocessing=True,
+                max_queue_size=20,
+                workers=4,
+                callbacks=[history, modelCheckpoint, tensorboard, tensorboardimage] )
 
     model.save(model_name + '_model.h5')
 
