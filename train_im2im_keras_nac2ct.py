@@ -17,6 +17,10 @@ import Unet
 
 tensorflow.keras.backend.set_image_data_format('channels_last')
 
+gpus = tensorflow.config.experimental.list_physical_devices('GPU')
+tensorflow.config.experimental.set_memory_growth(gpus[0], True)
+
+
 def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
