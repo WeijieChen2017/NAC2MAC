@@ -61,22 +61,32 @@ print("Testing list: ", testList)
 print('-'*50)
 
 # save each raw file as tiff image
+startZ = 0.45
+endZ = 0.75
+
+print("-"*25, "Validation", "-"*25)
 for valPathX in valList:
+    print(valPathX)
     valPathY = valPathX.replace("NPR", "CT")
     filenameX = os.path.basename(valPathX)[4:7]
     filenameY = os.path.basename(valPathY)[3:6]
     dataX = nib.load(valPathX).get_fdata()
     dataY = nib.load(valPathY).get_fdata()
-    dataNormX = normX(dataX)
-    dataNormY = normY(dataY)
     lenZ = dataX.shape[2]
-    for idx in range(lenZ):
+    dataNormX = normX(dataX[int(lenZ*startZ):int(lenZ*endZ)])
+    dataNormY = normY(dataY[int(lenZ*startZ):int(lenZ*endZ)])
+    lenNormZ = dataNormX.shape[2]
+    for idx in range(lenNormZ):
         sliceX = dataNormX[:, :, idx]
         sliceY = dataNormY[:, :, idx]
         savenameX = valFolderX + "X_" + filenameX + "_{0:03d}".format(idx)
         savenameY = valFolderY + "Y_" + filenameY + "_{0:03d}".format(idx)
-        print(savenameX)
-        print(savenameY)
+        tiffX = Image.fromarray(sliceX)
+        tiffY = Image.fromarray(sliceY)
+        tiffX.save(savenameX)
+        tiffY.save(savenameY)
+        # print(savenameX)
+        # print(savenameY)
 
 
 # for train_name in train_list:
