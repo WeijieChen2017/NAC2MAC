@@ -101,7 +101,7 @@ class SimpleKerasGenerator(Sequence):
         batch_x_fns = self.X_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
         batch_y_fns = self.Y_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-        print(batch_x_fns, batch_y_fns)
+        # print(batch_x_fns, batch_y_fns)
 
         batch_x = np.array( [ imread(fn) for fn in batch_x_fns ] )
         batch_x = np.expand_dims(batch_x,3)
