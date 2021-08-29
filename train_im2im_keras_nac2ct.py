@@ -18,7 +18,7 @@ import Unet
 tensorflow.keras.backend.set_image_data_format('channels_last')
 
 def smooth_L1_loss(y_true, y_pred):
-    return losses.huber_loss(y_true, y_pred)
+    return losses.huber(y_true, y_pred)
 
 def execute():
     data_in_chan = 1
