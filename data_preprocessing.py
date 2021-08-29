@@ -10,12 +10,12 @@ valRatio = 0.2
 testRatio = 0.1
 
 # create directory and search nifty files
-trainFolderX = "./data_train/" + folderX + "/train/"
-trainFolderY = "./data_train/" + folderY + "/train/"
-testFolderX = "./data_train/" + folderX + "/test/"
-testFolderY = "./data_train/" + folderY + "/test/"
-valFolderX = "./data_train/" + folderX + "/val/"
-valFolderY = "./data_train/" + folderY + "/val/"
+trainFolderX = "./data_train/X/train/"
+trainFolderY = "./data_train/Y/train/"
+testFolderX = "./data_train/X/test/"
+testFolderY = "./data_train/Y/test/"
+valFolderX = "./data_train/X/val/"
+valFolderY = "./data_train/Y/val/"
 
 for folderName in [trainFolderX, testFolderX, valFolderX,
                    trainFolderY, testFolderY, valFolderY]:
@@ -28,7 +28,7 @@ for filePath in fileList:
     print(filePath)
 
 # shuffle and create train/val/test file list
-np.random.seed("813")
+np.random.seed(813)
 fileList = np.asarray(fileList)
 np.random.shuffle(fileList)
 fileList = list(fileList)
