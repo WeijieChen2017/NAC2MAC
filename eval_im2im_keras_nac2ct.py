@@ -28,7 +28,6 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 10
-    num_epochs = 25
 
     model_name = 'nac2ct'
 
@@ -50,15 +49,9 @@ def execute():
     print('load model weights')
     model.load_weights("./" + model_name + "_model.h5")
 
-    # print('model eval')
-    # model.fit(  train_gen,
-    #             validation_data=val_gen,
-    #             epochs=num_epochs,
-    #             use_multiprocessing=True,
-    #             max_queue_size=20,
-    #             workers=4,
-    #             callbacks=[history, modelCheckpoint, tensorboard] )#, tensorboardimage
-
+    print('model eval')
+    results = model.evaluate(test_gen, batch_size=batch_size, verbose=1, return_dict=True)
+    numpy.save("results.npy", results)
     # model.save(model_name + '_model.h5')
 
 if __name__ == "__main__": 
