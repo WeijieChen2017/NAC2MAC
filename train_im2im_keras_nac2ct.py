@@ -32,11 +32,11 @@ def execute():
 
     model_name = 'nac2ct'
 
-    X_folder = "./data_train/tiff/X"
-    Y_folder = "./data_train/tiff/Y"
+    X_folder = "./data_train/X/"
+    Y_folder = "./data_train/Y/"
 
-    X_progress_file = "./data_train/tiff/X/val/X_127_050.tiff"
-    Y_progress_file = "./data_train/tiff/Y/val/Y_127_050.tiff"
+    X_progress_file = "./data_train/X/val/X_127_050.tiff"
+    Y_progress_file = "./data_train/Y/val/Y_127_050.tiff"
 
     print('creating model')
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=16,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
