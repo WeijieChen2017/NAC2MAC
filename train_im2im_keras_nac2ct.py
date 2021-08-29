@@ -35,8 +35,8 @@ def execute():
     X_folder = "./data_train/tiff/X"
     Y_folder = "./data_train/tiff/Y"
 
-    X_progress_file = 'P:\\deepMRAC_direct\\data_June2019\\nac_to_mac\\X\\val\\X_00106_00000016.tiff'
-    Y_progress_file = 'P:\\deepMRAC_direct\\data_June2019\\nac_to_mac\\Y\\val\\Y_00106_00000016.tiff'
+    X_progress_file = "./data_train/tiff/X/val/X_127_050.tiff"
+    Y_progress_file = "./data_train/tiff/Y/val/Y_127_050.tiff"
 
     print('creating model')
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=16,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
