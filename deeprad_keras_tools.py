@@ -5,6 +5,7 @@ from tensorflow.keras.utils import Sequence
 from tensorflow.keras.callbacks import Callback
 from PIL import Image
 import numpy as np
+import random
 import io
 import os
 
@@ -54,7 +55,7 @@ def wrap_model( model, data_input_shape, data_output_shape, model_input_shape, m
     return tensorflow.keras.models.Model(new_input,new_output_wrapped)
 
 
-def get_keras_tiff_generator( X_folder, Y_folder, batch_size ):
+def get_keras_tiff_generator( X_folder, Y_folder, batch_size, shuffle=False ):
     """
     A function to return a SimpleKerasGenerator from .tif or .tiff images found within specified folders
 
@@ -68,6 +69,10 @@ def get_keras_tiff_generator( X_folder, Y_folder, batch_size ):
     """
     X_files = sorted(glob(os.path.join(X_folder,'*.tif'),recursive=True)) + sorted(glob(os.path.join(X_folder,'*.tiff'),recursive=True))
     Y_files = sorted(glob(os.path.join(Y_folder,'*.tif'),recursive=True)) + sorted(glob(os.path.join(Y_folder,'*.tiff'),recursive=True))
+
+    temp = list(zip(X_files, Y_files))
+    random.shuffle(temp)
+    X_files, Y_files = zip(*temp)
 
     print('keras tiff generator found {} files for X and {} files for Y'.format(len(X_files),len(Y_files)))
 

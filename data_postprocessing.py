@@ -61,8 +61,8 @@ print("Testing list: ", testList)
 print('-'*50)
 
 # save each raw file as tiff image
-startZ = 0
-endZ = 1
+startZ = 0.45
+endZ = 0.75
 
 packageVal = [valList, valFolderX, valFolderY, "Validation"]
 packageTest = [testList, testFolderX, testFolderY, "Test"]

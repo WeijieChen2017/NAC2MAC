@@ -12,8 +12,11 @@ import tensorflow
 from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import losses
-import numpy
+import numpy as np
+import nibabel as nib
 import Unet
+import glob
+import os
 
 tensorflow.keras.backend.set_image_data_format('channels_last')
 
@@ -51,12 +54,11 @@ def execute():
 
     print('model eval')
     results = model.evaluate(test_gen, batch_size=batch_size, verbose=1, return_dict=True)
-    numpy.save("results.npy", results)
+    np.save("results.npy", results)
 
     print('model predict')
     y_hat = model.predict(test_gen, batch_size=batch_size, verbose=1, use_multiprocessing=True)
-    numpy.save("y_hat.npy", y_hat)
-    # model.save(model_name + '_model.h5')
+    np.save("y_hat", y_hat)
 
 if __name__ == "__main__": 
     execute()
