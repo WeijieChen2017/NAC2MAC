@@ -23,10 +23,10 @@ def smooth_L1_loss(y_true, y_pred):
 def execute():
     data_in_chan = 1
     data_out_chan = 1
-    data_x = 256
-    data_y = 256*data_in_chan    
-    model_x = 256
-    model_y = 256
+    data_x = 512
+    data_y = 512*data_in_chan    
+    model_x = 512
+    model_y = 512
     batch_size = 10
     num_epochs = 25
 
