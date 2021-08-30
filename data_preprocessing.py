@@ -64,9 +64,9 @@ print('-'*50)
 startZ = 0.35
 endZ = 0.75
 
-packageVal = [valList, valFolderX, valFolderY, "Validation"]
-packageTest = [testList, testFolderX, testFolderY, "Test"]
-packageTrain = [trainList, trainFolderX, trainFolderY, "Train"]
+packageVal = [valList, valFolderX, valFolderY, "Validation", True]
+packageTest = [testList, testFolderX, testFolderY, "Test", False]
+packageTrain = [trainList, trainFolderX, trainFolderY, "Train", True]
 np.save("testList.npy", testList)
 
 for package in [packageTest, packageVal, packageTrain]:
@@ -74,6 +74,7 @@ for package in [packageTest, packageVal, packageTrain]:
     folderX = package[1]
     folderY = package[2]
     print("-"*25, package[3], "-"*25)
+    flag_crop = package[4]
 
     for pathX in fileList:
         pathY = pathX.replace("NPR", "CT")
@@ -82,8 +83,12 @@ for package in [packageTest, packageVal, packageTrain]:
         dataX = nib.load(pathX).get_fdata()
         dataY = nib.load(pathY).get_fdata()
         lenZ = dataX.shape[2]
-        dataNormX = normX(dataX[:, :, int(lenZ*startZ):int(lenZ*endZ)])
-        dataNormY = normY(dataY[:, :, int(lenZ*startZ):int(lenZ*endZ)])
+        if flag_crop:
+            dataNormX = normX(dataX[:, :, int(lenZ*startZ):int(lenZ*endZ)])
+            dataNormY = normY(dataY[:, :, int(lenZ*startZ):int(lenZ*endZ)])
+        else:
+            dataNormX = normX(dataX)
+            dataNormY = normY(dataY)
         lenNormZ = dataNormX.shape[2]
         print(pathX, lenNormZ)
         for idx in range(lenNormZ):
