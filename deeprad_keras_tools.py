@@ -43,8 +43,8 @@ def wrap_model( model, data_input_shape, data_output_shape, model_input_shape, m
     Returns
         A wrapped model that has input and output shapes matching the DeepRad data
     """
-    print(data_input_shape[0],data_input_shape[1],1)
-    print(model_input_shape[0],model_input_shape[2],model_input_shape[1])
+    # print(data_input_shape[0],data_input_shape[1],1)
+    # print(model_input_shape[0],model_input_shape[2],model_input_shape[1])
     new_input = tensorflow.keras.layers.Input(shape=(data_input_shape[0],data_input_shape[1],1))
     new_input_wrapped = tensorflow.keras.layers.Reshape(target_shape=(model_input_shape[0],model_input_shape[2],model_input_shape[1]))(new_input)
     new_input_wrapped = tensorflow.keras.layers.Permute((1,3,2))(new_input_wrapped)
@@ -52,7 +52,7 @@ def wrap_model( model, data_input_shape, data_output_shape, model_input_shape, m
     new_model_input = model(new_input_wrapped)
 
     new_output = tensorflow.keras.layers.Permute((1,3,2))(new_model_input)
-    print(model_output_shape[0],model_output_shape[1],1)
+    # print(model_output_shape[0],model_output_shape[1],1)
     new_output_wrapped = tensorflow.keras.layers.Reshape(target_shape=(model_output_shape[0],model_output_shape[1],1))(new_output)
 
     return tensorflow.keras.models.Model(new_input,new_output_wrapped)

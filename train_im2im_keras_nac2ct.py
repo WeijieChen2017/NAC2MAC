@@ -21,7 +21,7 @@ def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
 def execute():
-    data_in_chan = 1
+    data_in_chan = 5
     data_out_chan = 1
     data_x = 512
     data_y = 512   
@@ -46,16 +46,16 @@ def execute():
                                 activation='relu', dropout=0.5,
                                 batchnorm=True, maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
-    model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
+    # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
     # data_input_shape: The shape of the input data (from DeepRad). This is always a length two tuple [e.g., (M,N*C)]
     # data_output_shape: The shape of the ground truth and output data (from DeepRad). This is always a length two tuple [e.g., (M,N*C)]
     # model_input_shape: The shape of the Keras model input data. This is always a length three tuple [e.g., (M,N,C)]
     # model_output_shape: The shape of the Keras model ground truth and output data. This is always a length three tuple [e.g., (M,N,C)]
-    model = deeprad_keras_tools.wrap_model( model, 
-                                          (512,512*5),
-                                          (512,512),
-                                          (512,512,5),
-                                          (512,512,1))    
+    # model = deeprad_keras_tools.wrap_model( model, 
+    #                                       (512,512*5),
+    #                                       (512,512),
+    #                                       (512,512,5),
+    #                                       (512,512,1))    
     model.compile(optimizer=Adam(learning_rate=1e-4),
                   loss=smooth_L1_loss, 
                   metrics=[smooth_L1_loss,losses.mean_squared_error,losses.mean_absolute_error])
