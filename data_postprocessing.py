@@ -35,7 +35,7 @@ for folderName in [predFolderX, predFolderY, predFolderY_]:
 
 cmdCopyX = "cp " + testFolderX + "* " + predFolderX
 cmdCopyY = "cp " + testFolderY + "* " + predFolderY
-predData = np.load(predDataFile)
+predData = np.squeeze(np.load(predDataFile))
 predNorm = denormY(predData)
 predLoss = np.load(predLossFile, allow_pickle=True)
 print("Pred data shape: ", predData.shape)
@@ -58,9 +58,11 @@ for filePath in fileList:
     niftyX = nib.load(filePath)
     dataX = niftyX.get_fdata()
     print("Data shape: ", dataX.shape)
-    dataY_ = predNorm[:dataX.shape[2], :, :]
+    dataY_ = np.zeros(dataX.shape)
+    for idx in range(dataX.shape[2]):
+        dataY_[:, :, idx] = predNorm[idx, :, :]
     print("Pred shape: ", dataY_.shape)
-    predNorm = predNorm[dataX.shape[2], :, :]
+    predNorm = predNorm[dataX.shape[2]:, :, :]
     print("Left pred shape: ", predNorm.shape)
     niftyY_ = nib.Nifti1Image(dataY_, niftyX.affine, niftyX.header)
     savenameY_ = predFolderY_ + os.path.basename(filePath).replace("NPR", "pCT")
