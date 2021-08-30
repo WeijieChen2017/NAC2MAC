@@ -143,7 +143,7 @@ for package in [packageTest, packageVal, packageTrain]:
                 sliceX[:, :, idxC] = dataNormX[:, :, int(indexX[idxZ, idxC])]
             for idxC in range(channelY):
                 sliceY[:, :, idxC] = dataNormY[:, :, int(indexY[idxZ, idxC])]
-            savenameX = folderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".npy"
-            savenameY = folderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".npy"
+            savenameX = folderX + "X_" + filenameX + "_{0:03d}".format(idxZ) + ".npy"
+            savenameY = folderY + "Y_" + filenameY + "_{0:03d}".format(idxZ) + ".npy"
             np.save(savenameX, sliceX)
             np.save(savenameY, sliceY)
