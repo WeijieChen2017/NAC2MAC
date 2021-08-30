@@ -46,9 +46,9 @@ def execute():
 
     print('creating data generators')
     train_gen = deeprad_keras_tools.get_keras_tiff_generator( os.path.join(X_folder,'train'), os.path.join(Y_folder,'train'),
-                                                              batch_size, shuffle=True )
+                                                              batch_size, shuffle=False )
     val_gen = deeprad_keras_tools.get_keras_tiff_generator( os.path.join(X_folder,'val'), os.path.join(Y_folder,'val'),
-                                                            batch_size, shuffle=True )
+                                                            batch_size, shuffle=False )
 
     print('creating callbacks')
     history = History()
