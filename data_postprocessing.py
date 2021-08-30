@@ -27,7 +27,7 @@ predFolderX = "./data_pred/X/"
 predFolderY = "./data_pred/Y/"
 predFolderY_ = "./data_pred/Y_"
 predDataFile = "./y_hat.npy"
-predLossFile = "./results.npy"
+predLossFile = "./predLoss.npy"
 
 for folderName in [predFolderX, predFolderY, predFolderY_]:
     if not os.path.exists(folderName):

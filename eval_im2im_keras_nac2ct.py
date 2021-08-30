@@ -50,8 +50,8 @@ def execute():
     model.load_weights("./" + model_name + "_model.h5")
 
     print('model eval')
-    results = model.evaluate(test_gen, batch_size=batch_size, verbose=1, return_dict=True)
-    np.save("results.npy", results)
+    predLoss = model.evaluate(test_gen, batch_size=batch_size, verbose=1, return_dict=True)
+    np.save("predLoss.npy", predLoss)
 
     print('model predict')
     y_hat = model.predict(test_gen, batch_size=batch_size, verbose=1, use_multiprocessing=True)
