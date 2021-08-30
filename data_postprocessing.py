@@ -35,7 +35,7 @@ for folderName in [predFolderX, predFolderY, predFolderY_]:
 cmdCopyX = "cp " + testFolderX + "* " + predFolderX
 cmdCopyY = "cp " + testFolderY + "* " + predFolderY
 predData = np.load(predDataFile)
-print("Pred data shape: ", predData)
+print("Pred data shape: ", predData.shape)
 print("Copy test X command: ", cmdCopyX)
 print("Copy test Y command: ", cmdCopyY)
 
