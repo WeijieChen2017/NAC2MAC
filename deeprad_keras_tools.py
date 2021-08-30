@@ -163,7 +163,7 @@ class SimpleNpyGenerator(Sequence):
 
     def __getitem__(self, idx):
 
-        if shuffle:
+        if self.shuffle:
             tempZip = list(zip(self.X_filenames, self.Y_filenames))
             random.shuffle(tempZip)
             self.X_filenames, self.Y_filenames = zip(*temp)
