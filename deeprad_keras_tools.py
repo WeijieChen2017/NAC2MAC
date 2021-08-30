@@ -166,7 +166,7 @@ class SimpleNpyGenerator(Sequence):
         if self.shuffle:
             tempZip = list(zip(self.X_filenames, self.Y_filenames))
             random.shuffle(tempZip)
-            self.X_filenames, self.Y_filenames = zip(*temp)
+            self.X_filenames, self.Y_filenames = zip(*tempZip)
 
         batch_x_fns = self.X_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
         batch_y_fns = self.Y_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
