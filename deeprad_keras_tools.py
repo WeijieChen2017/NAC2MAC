@@ -139,13 +139,13 @@ def get_keras_npy_generator( X_folder, Y_folder, batch_size, shuffle=False ):
 
     print('keras tiff generator found {} files for X and {} files for Y'.format(len(X_files),len(Y_files)))
 
-    return SimpleNpyGenerator( X_files, Y_files, batch_size )
+    return SimpleNpyGenerator( X_files, Y_files, batch_size , shuffle )
 
 
 class SimpleNpyGenerator(Sequence):
     """Keras Generator Class that returns batches of images read from disk """
 
-    def __init__(self, X_filenames, Y_filenames, batch_size):
+    def __init__(self, X_filenames, Y_filenames, batch_size, shuffle=False):
         """
         The constructor for the SimpleKerasGenerator class
 
@@ -156,22 +156,25 @@ class SimpleNpyGenerator(Sequence):
         """
         self.X_filenames, self.Y_filenames = X_filenames, Y_filenames
         self.batch_size = batch_size
+        self.shuffle = shuffle
 
     def __len__(self):
         return len(self.X_filenames) // self.batch_size
 
     def __getitem__(self, idx):
+
+        if shuffle:
+            tempZip = list(zip(self.X_filenames, self.Y_filenames))
+            random.shuffle(tempZip)
+            self.X_filenames, self.Y_filenames = zip(*temp)
+
         batch_x_fns = self.X_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
         batch_y_fns = self.Y_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
-
-        # print(batch_x_fns, batch_y_fns)
 
         batch_x = np.array( [ np.load(fn) for fn in batch_x_fns ] )
         # batch_x = np.expand_dims(batch_x,3)
         batch_y = np.array( [ np.load(fn) for fn in batch_y_fns ] )
         # batch_y = np.expand_dims(batch_y,3)
-
-        print(batch_x.shape, batch_y.shape)
 
         return batch_x,batch_y
 
