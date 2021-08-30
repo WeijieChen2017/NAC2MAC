@@ -59,7 +59,7 @@ for filePath in fileList:
     dataX = niftyX.get_fdata()
     print("Data shape: ", dataX.shape)
     dataY_ = predNorm[:dataX.shape[2], :, :]
-    print("Pred shape: ", dataY_,shape)
+    print("Pred shape: ", dataY_.shape)
     predNorm = predNorm[dataX.shape[2], :, :]
     print("Left pred shape: ", predNorm.shape)
     niftyY_ = nib.Nifti1Image(dataY_, niftyX.affine, niftyX.header)
