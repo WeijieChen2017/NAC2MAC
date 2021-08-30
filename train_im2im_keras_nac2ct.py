@@ -28,7 +28,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 10
-    num_epochs = 100
+    num_epochs = 25
 
     model_name = 'nac2ct'
 
