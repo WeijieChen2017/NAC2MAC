@@ -25,7 +25,7 @@ testFolderX = "./data_train/X/test/"
 testFolderY = "./data_train/Y/test/"
 predFolderX = "./data_pred/X/"
 predFolderY = "./data_pred/Y/"
-predFolderY_ = "./data_pred/Y_"
+predFolderY_ = "./data_pred/Y_/"
 predDataFile = "./y_hat.npy"
 predLossFile = "./predLoss.npy"
 
@@ -33,29 +33,29 @@ for folderName in [predFolderX, predFolderY, predFolderY_]:
     if not os.path.exists(folderName):
         os.makedirs(folderName)
 
-cmdCopyX = "cp " + testFolderX + "* " + predFolderX
-cmdCopyY = "cp " + testFolderY + "* " + predFolderY
-predData = np.squeeze(np.load(predDataFile))
-predNorm = denormY(predData)
-predLoss = np.load(predLossFile, allow_pickle=True)
-print("Pred data shape: ", predData.shape)
-print("Copy test X command: ", cmdCopyX)
-print("Copy test Y command: ", cmdCopyY)
-os.system(cmdCopyX)
-os.system(cmdCopyY)
-
-# restore pred data into nifty files
-# test data generator is not shuffled, so restore them one by one
 fileList = ['./data_train/NPR_SRC/NPR_011.nii.gz',
             './data_train/NPR_SRC/NPR_063.nii.gz',
             './data_train/NPR_SRC/NPR_143.nii.gz']
 
+predData = np.squeeze(np.load(predDataFile))
+predNorm = denormY(predData)
+predLoss = np.load(predLossFile, allow_pickle=True)
+print("Pred data shape: ", predData.shape)
+
+# restore pred data into nifty files
+# test data generator is not shuffled, so restore them one by one
+
 print("-"*50)
 print("Restore nifty files.")
-for filePath in fileList:
+for fileXPath in fileList:
     print("^"*30)
-    print(filePath)
-    niftyX = nib.load(filePath)
+    print(fileXPath)
+
+    fileYPath = fileXPath.replace("NPR", "CT")
+    os.system("cp " + fileXPath + predFolderX)
+    os.system("cp " + fileYPath + predFolderY)
+
+    niftyX = nib.load(fileXPath)
     dataX = niftyX.get_fdata()
     print("Data shape: ", dataX.shape)
     dataY_ = np.zeros(dataX.shape)
@@ -65,7 +65,7 @@ for filePath in fileList:
     predNorm = predNorm[dataX.shape[2]:, :, :]
     print("Left pred shape: ", predNorm.shape)
     niftyY_ = nib.Nifti1Image(dataY_, niftyX.affine, niftyX.header)
-    savenameY_ = predFolderY_ + os.path.basename(filePath).replace("NPR", "pCT")
+    savenameY_ = predFolderY_ + "Y_" +os.path.basename(fileXPath).replace("NPR", "pCT")
     nib.save(niftyY_, savenameY_)
 print("-"*50)
 print(predLoss)
