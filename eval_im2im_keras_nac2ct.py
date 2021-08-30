@@ -37,9 +37,6 @@ def execute():
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
 
-    X_progress_file = "./data_train/X/val/X_127_050.tiff"
-    Y_progress_file = "./data_train/Y/val/Y_127_050.tiff"
-
     print('creating model')
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=16,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
     model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
@@ -58,6 +55,7 @@ def execute():
 
     print('model predict')
     y_hat = model.predict(test_gen, batch_size=batch_size, verbose=1, use_multiprocessing=True)
+    print(y_hat.shape)
     np.save("y_hat", y_hat)
 
 if __name__ == "__main__": 

@@ -70,9 +70,10 @@ def get_keras_tiff_generator( X_folder, Y_folder, batch_size, shuffle=False ):
     X_files = sorted(glob(os.path.join(X_folder,'*.tif'),recursive=True)) + sorted(glob(os.path.join(X_folder,'*.tiff'),recursive=True))
     Y_files = sorted(glob(os.path.join(Y_folder,'*.tif'),recursive=True)) + sorted(glob(os.path.join(Y_folder,'*.tiff'),recursive=True))
 
-    temp = list(zip(X_files, Y_files))
-    random.shuffle(temp)
-    X_files, Y_files = zip(*temp)
+    if shuffle:
+        temp = list(zip(X_files, Y_files))
+        random.shuffle(temp)
+        X_files, Y_files = zip(*temp)
 
     print('keras tiff generator found {} files for X and {} files for Y'.format(len(X_files),len(Y_files)))
 
