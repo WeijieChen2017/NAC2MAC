@@ -25,8 +25,8 @@ def execute():
     data_out_chan = 1
     data_x = 512*data_in_chan
     data_y = 512*data_out_chan   
-    model_x = 512
-    model_y = 512
+    model_x = 512*data_in_chan
+    model_y = 512*data_out_chan
     batch_size = 10
     num_epochs = 100
 
@@ -39,8 +39,17 @@ def execute():
     Y_progress_file = "./data_train/Y/val/Y_127_050.tiff"
 
     print('creating model')
-    model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=16,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
-    model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
+    model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=64,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
+    # data_input_shape: The shape of the input data (from DeepRad). This is always a length two tuple [e.g., (M,N*C)]
+    # data_output_shape: The shape of the ground truth and output data (from DeepRad). This is always a length two tuple [e.g., (M,N*C)]
+    # model_input_shape: The shape of the Keras model input data. This is always a length three tuple [e.g., (M,N,C)]
+    # model_output_shape: The shape of the Keras model ground truth and output data. This is always a length three tuple [e.g., (M,N,C)]
+
+    model = deeprad_keras_tools.wrap_model( model, 
+                                          (512,512*5),
+                                          (512,512),
+                                          (512,512,5),
+                                          (512,512,1))    
     model.compile(optimizer=Adam(learning_rate=1e-4), loss=smooth_L1_loss, metrics=[smooth_L1_loss,losses.mean_squared_error,losses.mean_absolute_error])
     model.summary()
 
