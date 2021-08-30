@@ -83,6 +83,31 @@ def get_keras_tiff_generator( X_folder, Y_folder, batch_size, shuffle=False ):
     return SimpleKerasGenerator( X_files, Y_files, batch_size )
 
 
+def get_keras_npy_generator( X_folder, Y_folder, batch_size, shuffle=False ):
+    """
+    A function to return a SimpleKerasGenerator from .tif or .tiff images found within specified folders
+
+    Parameters:
+        X_folder: A folder that contains the input data .tif or .tiff images with filenames that match Y_folder when sorted
+        Y_folder: A folder that contains the ground truth data .tif or .tiff images with filenames that match X_folder when sorted
+        batch_size: The batch size of the generator
+
+    Returns:
+        A Keras Generator that returns samples of batch_size
+    """
+    X_files = sorted(glob(os.path.join(X_folder,'*.npy'),recursive=True))
+    Y_files = sorted(glob(os.path.join(Y_folder,'*.npy'),recursive=True))
+
+    if shuffle:
+        temp = list(zip(X_files, Y_files))
+        random.shuffle(temp)
+        X_files, Y_files = zip(*temp)
+
+    print('keras tiff generator found {} files for X and {} files for Y'.format(len(X_files),len(Y_files)))
+
+    return SimpleKerasGenerator( X_files, Y_files, batch_size )
+
+
 class SimpleKerasGenerator(Sequence):
     """Keras Generator Class that returns batches of images read from disk """
 

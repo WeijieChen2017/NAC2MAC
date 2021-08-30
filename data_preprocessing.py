@@ -16,10 +16,24 @@ def normY(data):
     data = (data + 1000) / 4000
     return data
 
+def create_index(data, n_slice=1):
+    dimX, dimY, dimZ = data.shape
+    index = np.zeros((dimZ,n_slice))
+    
+    for idx_z in range(z):
+        for idx_c in range(n_slice):
+            index[idx_z, idx_c] = idx_z-(n_slice-idx_c+1)+n_slice//2+2
+
+    index[index<0]=0
+    index[index>dimZ-1]=dimZ-1
+    return index
+
 folderX = "./data_train/NPR_SRC/"
 folderY = "./data_train/CT_SRC/"
 valRatio = 0.2
 testRatio = 0.1
+channelX = 5
+channelY = 1
 
 # create directory and search nifty files
 trainFolderX = "./data_train/X/train/"
@@ -76,6 +90,33 @@ for package in [packageTest, packageVal, packageTrain]:
     print("-"*25, package[3], "-"*25)
     flag_crop = package[4]
 
+    # tiff version
+    # for pathX in fileList:
+    #     pathY = pathX.replace("NPR", "CT")
+    #     filenameX = os.path.basename(pathX)[4:7]
+    #     filenameY = os.path.basename(pathY)[3:6]
+    #     dataX = nib.load(pathX).get_fdata()
+    #     dataY = nib.load(pathY).get_fdata()
+    #     lenZ = dataX.shape[2]
+    #     if flag_crop:
+    #         dataNormX = normX(dataX[:, :, int(lenZ*startZ):int(lenZ*endZ)])
+    #         dataNormY = normY(dataY[:, :, int(lenZ*startZ):int(lenZ*endZ)])
+    #     else:
+    #         dataNormX = normX(dataX)
+    #         dataNormY = normY(dataY)
+    #     lenNormZ = dataNormX.shape[2]
+    #     print(pathX, lenNormZ)
+    #     for idx in range(lenNormZ):
+    #         sliceX = dataNormX[:, :, idx]
+    #         sliceY = dataNormY[:, :, idx]
+    #         savenameX = folderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".tiff"
+    #         savenameY = folderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".tiff"
+    #         tiffX = Image.fromarray(sliceX)
+    #         tiffY = Image.fromarray(sliceY)
+    #         tiffX.save(savenameX)
+    #         tiffY.save(savenameY)
+    
+    # npy version
     for pathX in fileList:
         pathY = pathX.replace("NPR", "CT")
         filenameX = os.path.basename(pathX)[4:7]
@@ -91,12 +132,18 @@ for package in [packageTest, packageVal, packageTrain]:
             dataNormY = normY(dataY)
         lenNormZ = dataNormX.shape[2]
         print(pathX, lenNormZ)
-        for idx in range(lenNormZ):
-            sliceX = dataNormX[:, :, idx]
-            sliceY = dataNormY[:, :, idx]
-            savenameX = folderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".tiff"
-            savenameY = folderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".tiff"
-            tiffX = Image.fromarray(sliceX)
-            tiffY = Image.fromarray(sliceY)
-            tiffX.save(savenameX)
-            tiffY.save(savenameY)
+
+        indexX = create_index(dataNormX, n_slice=channelX)
+        indexY = create_index(dataNormY, n_slice=channelY)
+        sliceX = np.zeros((dataNormX.shape[0], dataNormX.shape[1], channelX))
+        sliceY = np.zeros((dataNormY.shape[0], dataNormY.shape[1], channelY))
+        
+        for idxZ in range(lenNormZ):
+            for idxC in range(channelX):
+                sliceX[:, :, idxC] = dataNormX[:, :, int(indexX[idxZ, idxC])]
+            for idxC in range(channelY):
+                sliceY[:, :, idxC] = dataNormY[:, :, int(indexY[idxZ, idxC])]
+            savenameX = folderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".npy"
+            savenameY = folderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".npy"
+            np.save(savenameX, sliceX)
+            np.save(savenameY, sliceY)
