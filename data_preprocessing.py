@@ -76,7 +76,6 @@ for package in [packageTest, packageVal, packageTrain]:
     print("-"*25, package[3], "-"*25)
 
     for pathX in fileList:
-        print(pathX)
         pathY = pathX.replace("NPR", "CT")
         filenameX = os.path.basename(pathX)[4:7]
         filenameY = os.path.basename(pathY)[3:6]
@@ -86,6 +85,7 @@ for package in [packageTest, packageVal, packageTrain]:
         dataNormX = normX(dataX[:, :, int(lenZ*startZ):int(lenZ*endZ)])
         dataNormY = normY(dataY[:, :, int(lenZ*startZ):int(lenZ*endZ)])
         lenNormZ = dataNormX.shape[2]
+        print(pathX, lenNormZ)
         for idx in range(lenNormZ):
             sliceX = dataNormX[:, :, idx]
             sliceY = dataNormY[:, :, idx]
