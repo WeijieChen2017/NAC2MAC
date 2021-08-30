@@ -137,6 +137,8 @@ class SimpleKerasGenerator(Sequence):
         batch_y = np.array( [ imread(fn) for fn in batch_y_fns ] )
         batch_y = np.expand_dims(batch_y,3)
 
+        print(batch_x.shape, batch_y.shape)
+
         return batch_x,batch_y
 
 class TensorBoardIm2ImCallback(Callback):
