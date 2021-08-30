@@ -61,12 +61,13 @@ print("Testing list: ", testList)
 print('-'*50)
 
 # save each raw file as tiff image
-startZ = 0
-endZ = 1
+startZ = 0.35
+endZ = 0.75
 
 packageVal = [valList, valFolderX, valFolderY, "Validation"]
 packageTest = [testList, testFolderX, testFolderY, "Test"]
 packageTrain = [trainList, trainFolderX, trainFolderY, "Train"]
+np.save("testList.npy", testList)
 
 for package in [packageTest, packageVal, packageTrain]:
     fileList = package[0]
@@ -76,21 +77,21 @@ for package in [packageTest, packageVal, packageTrain]:
 
     for pathX in fileList:
         print(pathX)
-        # pathY = pathX.replace("NPR", "CT")
-        # filenameX = os.path.basename(pathX)[4:7]
-        # filenameY = os.path.basename(pathY)[3:6]
-        # dataX = nib.load(pathX).get_fdata()
-        # dataY = nib.load(pathY).get_fdata()
-        # lenZ = dataX.shape[2]
-        # dataNormX = normX(dataX[:, :, int(lenZ*startZ):int(lenZ*endZ)])
-        # dataNormY = normY(dataY[:, :, int(lenZ*startZ):int(lenZ*endZ)])
-        # lenNormZ = dataNormX.shape[2]
-        # for idx in range(lenNormZ):
-        #     sliceX = dataNormX[:, :, idx]
-        #     sliceY = dataNormY[:, :, idx]
-        #     savenameX = folderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".tiff"
-        #     savenameY = folderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".tiff"
-        #     tiffX = Image.fromarray(sliceX)
-        #     tiffY = Image.fromarray(sliceY)
-        #     tiffX.save(savenameX)
-        #     tiffY.save(savenameY)
+        pathY = pathX.replace("NPR", "CT")
+        filenameX = os.path.basename(pathX)[4:7]
+        filenameY = os.path.basename(pathY)[3:6]
+        dataX = nib.load(pathX).get_fdata()
+        dataY = nib.load(pathY).get_fdata()
+        lenZ = dataX.shape[2]
+        dataNormX = normX(dataX[:, :, int(lenZ*startZ):int(lenZ*endZ)])
+        dataNormY = normY(dataY[:, :, int(lenZ*startZ):int(lenZ*endZ)])
+        lenNormZ = dataNormX.shape[2]
+        for idx in range(lenNormZ):
+            sliceX = dataNormX[:, :, idx]
+            sliceY = dataNormY[:, :, idx]
+            savenameX = folderX + "X_" + filenameX + "_{0:03d}".format(idx) + ".tiff"
+            savenameY = folderY + "Y_" + filenameY + "_{0:03d}".format(idx) + ".tiff"
+            tiffX = Image.fromarray(sliceX)
+            tiffY = Image.fromarray(sliceY)
+            tiffX.save(savenameX)
+            tiffY.save(savenameY)

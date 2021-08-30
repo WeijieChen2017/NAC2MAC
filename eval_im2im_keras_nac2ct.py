@@ -56,7 +56,7 @@ def execute():
     print('model predict')
     y_hat = model.predict(test_gen, batch_size=batch_size, verbose=1, use_multiprocessing=True)
     print(y_hat.shape)
-    np.save("y_hat", y_hat)
+    np.save("y_hat.npy", y_hat)
 
 if __name__ == "__main__": 
     execute()
