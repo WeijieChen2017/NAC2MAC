@@ -20,7 +20,7 @@ def create_index(data, n_slice=1):
     dimX, dimY, dimZ = data.shape
     index = np.zeros((dimZ,n_slice))
     
-    for idx_z in range(z):
+    for idx_z in range(dimZ):
         for idx_c in range(n_slice):
             index[idx_z, idx_c] = idx_z-(n_slice-idx_c+1)+n_slice//2+2
 
@@ -137,7 +137,7 @@ for package in [packageTest, packageVal, packageTrain]:
         indexY = create_index(dataNormY, n_slice=channelY)
         sliceX = np.zeros((dataNormX.shape[0], dataNormX.shape[1], channelX))
         sliceY = np.zeros((dataNormY.shape[0], dataNormY.shape[1], channelY))
-        
+
         for idxZ in range(lenNormZ):
             for idxC in range(channelX):
                 sliceX[:, :, idxC] = dataNormX[:, :, int(indexX[idxZ, idxC])]
