@@ -46,11 +46,12 @@ os.system(cmdCopyY)
 
 # restore pred data into nifty files
 # test data generator is not shuffled, so restore them one by one
+fileList = ['./data_train/NPR_SRC/NPR_011.nii.gz',
+            './data_train/NPR_SRC/NPR_063.nii.gz',
+            './data_train/NPR_SRC/NPR_143.nii.gz']
 
 print("-"*50)
 print("Restore nifty files.")
-fileList = glob.glob(testFolderX+"/*.nii") + glob.glob(testFolderX+"/*.nii.gz")
-fileList.sort()
 for filePath in fileList:
     print("^"*30)
     print(filePath)
@@ -62,7 +63,7 @@ for filePath in fileList:
     predNorm = predNorm[dataX.shape[2], :, :]
     print("Left pred shape: ", predNorm.shape)
     niftyY_ = nib.Nifti1Image(dataY_, niftyX.affine, niftyX.header)
-    savenameY_ = predFolderY_ + os.path.basename(filePath)
+    savenameY_ = predFolderY_ + os.path.basename(filePath).replace("NPR", "pCT")
     nib.save(niftyY_, savenameY_)
 print("-"*50)
 print(predLoss)
