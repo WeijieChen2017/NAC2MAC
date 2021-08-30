@@ -167,9 +167,9 @@ class SimpleNpyGenerator(Sequence):
         # print(batch_x_fns, batch_y_fns)
 
         batch_x = np.array( [ np.load(fn) for fn in batch_x_fns ] )
-        batch_x = np.expand_dims(batch_x,3)
+        # batch_x = np.expand_dims(batch_x,3)
         batch_y = np.array( [ np.load(fn) for fn in batch_y_fns ] )
-        batch_y = np.expand_dims(batch_y,3)
+        # batch_y = np.expand_dims(batch_y,3)
 
         print(batch_x.shape, batch_y.shape)
 
