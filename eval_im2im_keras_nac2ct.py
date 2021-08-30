@@ -30,7 +30,7 @@ def execute():
     data_y = 512*data_in_chan    
     model_x = 512
     model_y = 512
-    batch_size = 10
+    batch_size = 1
 
     model_name = 'nac2ct'
 
