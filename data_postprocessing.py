@@ -37,7 +37,7 @@ cmdCopyX = "cp " + testFolderX + "* " + predFolderX
 cmdCopyY = "cp " + testFolderY + "* " + predFolderY
 predData = np.load(predDataFile)
 predNorm = denormY(predData)
-predLoss = np.load(predLossFile)
+predLoss = np.load(predLossFile, allow_pickle=True)
 print("Pred data shape: ", predData.shape)
 print("Copy test X command: ", cmdCopyX)
 print("Copy test Y command: ", cmdCopyY)
