@@ -32,7 +32,7 @@ folderX = "./data_train/NPR_SRC/"
 folderY = "./data_train/CT_SRC/"
 valRatio = 0.2
 testRatio = 0.1
-channelX = 5
+channelX = 1
 channelY = 1
 
 # create directory and search nifty files

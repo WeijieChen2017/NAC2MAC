@@ -31,7 +31,7 @@ def execute():
     num_epochs = 25
 
     model_name = 'nac2ct'
-    modelTag = "nac2ct_4-64_5-1"
+    modelTag = "nac2ct_4-64_1-1_xBN"
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
@@ -44,7 +44,7 @@ def execute():
                                 out_ch=data_out_chan,
                                 start_ch=64, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
-                                batchnorm=True, maxpool=True, # turn off batchnorm
+                                batchnorm=False, maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
     # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
     # data_input_shape: The shape of the input data (from DeepRad). This is always a length two tuple [e.g., (M,N*C)]
