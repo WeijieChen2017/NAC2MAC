@@ -52,9 +52,9 @@ def execute():
     model.summary()
 
     print('creating data generators')
-    test_gen = deeprad_keras_tools.get_keras_tiff_generator( os.path.join(X_folder,'test'),
-                                                             os.path.join(Y_folder,'test'),
-                                                             batch_size )
+    test_gen = deeprad_keras_tools.get_keras_npy_generator( os.path.join(X_folder,'test'),
+                                                            os.path.join(Y_folder,'test'),
+                                                            batch_size )
     
     print('load model weights')
     model.load_weights("./" + model_name + "_model.h5")
