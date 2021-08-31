@@ -43,7 +43,7 @@ def execute():
                                 out_ch=data_out_chan,
                                 start_ch=64, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
-                                batchnorm=False, maxpool=True, # turn off batchnorm
+                                batchnorm=True, maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
 
 
