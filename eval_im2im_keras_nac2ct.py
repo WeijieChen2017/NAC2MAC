@@ -27,7 +27,7 @@ def execute():
     data_in_chan = 5
     data_out_chan = 1
     data_x = 512
-    data_y = 512*data_in_chan    
+    data_y = 512   
     model_x = 512
     model_y = 512
     batch_size = 1
@@ -43,7 +43,7 @@ def execute():
                                 out_ch=data_out_chan,
                                 start_ch=64, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
-                                batchnorm=True, maxpool=True, # turn off batchnorm
+                                batchnorm=False, maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
 
 
