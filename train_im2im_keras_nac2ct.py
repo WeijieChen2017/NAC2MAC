@@ -21,7 +21,7 @@ def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
 def execute():
-    data_in_chan = 1
+    data_in_chan = 5
     data_out_chan = 1
     data_x = 512
     data_y = 512   
@@ -31,13 +31,13 @@ def execute():
     num_epochs = 25
 
     model_name = 'nac2ct'
-    modelTag = "nac2ct_4-64_1-1_xBN"
+    modelTag = "nac2ct_4-64_5-1_xBN"
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
 
-    X_progress_file = "./data_train/X/val/X_127_050.tiff"
-    Y_progress_file = "./data_train/Y/val/Y_127_050.tiff"
+    # X_progress_file = "./data_train/X/val/X_127_050.tiff"
+    # Y_progress_file = "./data_train/Y/val/Y_127_050.tiff"
 
     print('creating model')
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],
