@@ -24,7 +24,7 @@ def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
 def execute():
-    data_in_chan = 5
+    data_in_chan = 1
     data_out_chan = 1
     data_x = 512
     data_y = 512   
