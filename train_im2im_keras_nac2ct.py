@@ -32,6 +32,8 @@ def execute():
 
     model_name = 'nac2ct'
     modelTag = "nac2ct_4-128_5-1_xBN"
+    continue_train = True
+    initial_epoch = 10 # 0-9 at first, start from 10
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
@@ -61,6 +63,11 @@ def execute():
                   metrics=[smooth_L1_loss,losses.mean_squared_error,losses.mean_absolute_error])
     model.summary()
 
+    if continue_train:
+        initial_epoch_fit = initial_epoch
+        print('load model weights')
+        model.load_weights("./" + model_name + "_model.h5")
+
     print('creating data generators')
     train_gen = deeprad_keras_tools.get_keras_npy_generator( os.path.join(X_folder,'train'), os.path.join(Y_folder,'train'),
                                                              batch_size, shuffle=True )
@@ -82,6 +89,7 @@ def execute():
                 epochs=num_epochs,
                 use_multiprocessing=True,
                 max_queue_size=20,
+                initial_epoch=initial_epoch_fit,
                 workers=4,
                 callbacks=[history, modelCheckpoint, tensorboard] )#, tensorboardimage
 
