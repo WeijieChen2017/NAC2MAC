@@ -78,22 +78,22 @@ def execute():
     history = History()
     modelCheckpoint = ModelCheckpoint(model_name + '_weights.h5', monitor='loss', save_best_only=True)
     tblogdir = os.path.join('tblogs','{}'.format(time()), '{}'.format(modelTag))
-    tensorboard = TensorBoard(log_dir=tblogdir)
+    # tensorboard = TensorBoard(log_dir=tblogdir)
     # X_progress = deeprad_keras_tools.read_images( [X_progress_file] )
     # Y_progress = deeprad_keras_tools.read_images( [Y_progress_file] )
     # tensorboardimage = deeprad_keras_tools.TensorBoardIm2ImCallback(log_dir=tblogdir,X=X_progress,Y=Y_progress)
 
-    # print('fitting model')
-    # model.fit(  train_gen,
-    #             validation_data=val_gen,
-    #             epochs=num_epochs,
-    #             use_multiprocessing=True,
-    #             max_queue_size=20,
-    #             initial_epoch=initial_epoch_fit,
-    #             workers=4,
-    #             callbacks=[history, modelCheckpoint, tensorboard] )#, tensorboardimage
+    print('fitting model')
+    model.fit(  train_gen,
+                validation_data=val_gen,
+                epochs=num_epochs,
+                use_multiprocessing=True,
+                max_queue_size=20,
+                initial_epoch=initial_epoch_fit,
+                workers=4,
+                callbacks=[history, modelCheckpoint] )#, tensorboardimage, tensorboard
 
-    # model.save(model_name + '_model.h5')
+    model.save(model_name + '_model.h5')
 
 if __name__ == "__main__": 
     execute()
