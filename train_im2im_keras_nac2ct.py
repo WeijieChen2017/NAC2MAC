@@ -28,10 +28,10 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 10
-    num_epochs = 25
+    num_epochs = 10
 
     model_name = 'nac2ct'
-    modelTag = "nac2ct_4-64_5-1_xBN"
+    modelTag = "nac2ct_4-128_5-1_xBN"
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
@@ -42,7 +42,7 @@ def execute():
     print('creating model')
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],
                                 out_ch=data_out_chan,
-                                start_ch=64, depth=4, inc_rate=2,
+                                start_ch=128, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
                                 batchnorm=False, maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)

@@ -41,7 +41,7 @@ def execute():
     # model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=64,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],
                                 out_ch=data_out_chan,
-                                start_ch=64, depth=4, inc_rate=2,
+                                start_ch=128, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
                                 batchnorm=False, maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
