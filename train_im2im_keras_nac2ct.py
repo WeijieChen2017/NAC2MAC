@@ -21,6 +21,12 @@ def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
 def execute():
+
+    model_name = 'nac2ct'
+    modelTag = "nac2ct_4-128_5-1_xBN"
+    continue_train = True
+    initial_epoch = 10 # 0-9 at first, start from 10
+
     data_in_chan = 5
     data_out_chan = 1
     data_x = 512
@@ -28,12 +34,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 4
-    num_epochs = 10
-
-    model_name = 'nac2ct'
-    modelTag = "nac2ct_4-128_5-1_xBN"
-    continue_train = True
-    initial_epoch = 10 # 0-9 at first, start from 10
+    num_epochs = 10 + initial_epoch
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
@@ -78,7 +79,7 @@ def execute():
     history = History()
     modelCheckpoint = ModelCheckpoint(model_name + '_weights.h5', monitor='loss', save_best_only=True)
     tblogdir = os.path.join('tblogs','{}'.format(time()), '{}'.format(modelTag))
-    # tensorboard = TensorBoard(log_dir=tblogdir)
+    tensorboard = TensorBoard(log_dir=tblogdir)
     # X_progress = deeprad_keras_tools.read_images( [X_progress_file] )
     # Y_progress = deeprad_keras_tools.read_images( [Y_progress_file] )
     # tensorboardimage = deeprad_keras_tools.TensorBoardIm2ImCallback(log_dir=tblogdir,X=X_progress,Y=Y_progress)
