@@ -26,16 +26,19 @@ def canny_loss(y_true, y_pred):
     edge_pred = feature.canny(y_pred, sigma=1)
     return losses.MeanSquaredError(edge_true, edge_pred)
 
+def mu8_loss(y_true, y_pred):
+    mu_sL1 = 0.8
+    mu_c = 1-mu_sL1
+    loss = mu_sL1 * smooth_L1_loss + mu_c * 
+    return loss
+
 def execute():
 
     model_name = 'nac2ct'
     modelTag = "nac2ct_4-64_5-1_xBN_mu8"
     continue_train = False
     initial_epoch = 0 # 0-9 at first, start from 10
-    mu_sL1 = 0.8
-    mu_c = 1-mu_sL1
-    loss = mu_sL1 * smooth_L1_loss + mu_c * canny_loss
-    loss_group = [loss, smooth_L1_loss, canny_loss,
+    loss_group = [mu8_loss, smooth_L1_loss, canny_loss,
                   losses.mean_squared_error, losses.mean_absolute_error]
 
     data_in_chan = 5
@@ -70,7 +73,7 @@ def execute():
     #                                       (512,512),
     #                                       (512,512,5),
     #                                       (512,512,1))    
-    model.compile(optimizer=Adam(learning_rate=1e-4), loss=loss, metrics=loss_group)
+    model.compile(optimizer=Adam(learning_rate=1e-4), loss=mu8_loss, metrics=loss_group)
     model.summary()
 
     if continue_train:

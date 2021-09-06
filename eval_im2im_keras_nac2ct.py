@@ -28,6 +28,12 @@ def canny_loss(y_true, y_pred):
     edge_pred = feature.canny(y_pred, sigma=1)
     return losses.MeanSquaredError(edge_true, edge_pred)
 
+def mu8_loss(y_true, y_pred):
+    mu_sL1 = 0.8
+    mu_c = 1-mu_sL1
+    loss = mu_sL1 * smooth_L1_loss + mu_c * canny_loss
+    return loss
+
 def execute():
     data_in_chan = 5
     data_out_chan = 1
@@ -36,10 +42,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 1
-    mu_sL1 = 0.8
-    mu_c = 1-mu_sL1
-    loss = mu_sL1 * smooth_L1_loss + mu_c * canny_loss
-    loss_group = [loss, smooth_L1_loss, canny_loss,
+    loss_group = [mu8_loss, smooth_L1_loss, canny_loss,
                   losses.mean_squared_error, losses.mean_absolute_error]
 
     model_name = 'nac2ct'
@@ -57,7 +60,7 @@ def execute():
                                 upconv=True, residual=False)
 
     # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
-    model.compile(optimizer=Adam(learning_rate=1e-4), loss=loss, metrics=eval_loss_group)
+    model.compile(optimizer=Adam(learning_rate=1e-4), loss=mu8_loss, metrics=eval_loss_group)
     model.summary()
 
     print('creating data generators')
