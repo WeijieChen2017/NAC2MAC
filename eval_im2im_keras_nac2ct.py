@@ -65,7 +65,7 @@ def execute():
                                 upconv=True, residual=False)
 
     # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
-    model.compile(optimizer=Adam(learning_rate=1e-4), loss=mu8_loss, metrics=eval_loss_group)
+    model.compile(optimizer=Adam(learning_rate=1e-4), loss=mu8_loss, metrics=loss_group)
     model.summary()
 
     print('creating data generators')
