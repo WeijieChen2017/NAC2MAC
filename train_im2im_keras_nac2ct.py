@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 import tensorflow
 from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras import backend as K
 from tensorflow.keras import losses
 from skimage import feature
 import numpy
@@ -27,9 +28,14 @@ def canny_loss(y_true, y_pred):
     return losses.MeanSquaredError(edge_true, edge_pred)
 
 def mu8_loss(y_true, y_pred):
-    mu_sL1 = 0.8
-    mu_c = 1-mu_sL1
-    loss = mu_sL1 * smooth_L1_loss + mu_c * canny_loss
+    mu_mse = 0.8
+    mu_canny = 1-mu_mse
+    edge_true = feature.canny(y_true, sigma=1)
+    edge_pred = feature.canny(y_pred, sigma=1)
+    
+    mse = K.mean(K.square(y_true-y_pred))
+    canny = K.mean(K.square(edge_true-edge_pred))
+    loss = mu_mse * mse + mu_canny * canny
     return loss
 
 def execute():
@@ -38,7 +44,7 @@ def execute():
     modelTag = "nac2ct_4-64_5-1_xBN_mu8"
     continue_train = False
     initial_epoch = 0 # 0-9 at first, start from 10
-    loss_group = [mu8_loss, smooth_L1_loss, canny_loss,
+    loss_group = [mu8_loss, smooth_L1_loss,
                   losses.mean_squared_error, losses.mean_absolute_error]
 
     data_in_chan = 5
