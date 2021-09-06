@@ -23,15 +23,15 @@ def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
 def canny_loss(y_true, y_pred):
-    edge_true = feature.canny(y_true, sigma=1)
-    edge_pred = feature.canny(y_pred, sigma=1)
+    edge_true = feature.canny(tensorflow.make_ndarray(y_true), sigma=1)
+    edge_pred = feature.canny(tensorflow.make_ndarray(y_pred), sigma=1)
     return losses.MeanSquaredError(edge_true, edge_pred)
 
 def mu8_loss(y_true, y_pred):
     mu_mse = 0.8
     mu_canny = 1-mu_mse
-    edge_true = feature.canny(y_true, sigma=1)
-    edge_pred = feature.canny(y_pred, sigma=1)
+    edge_true = feature.canny(tensorflow.make_ndarray(y_true), sigma=1)
+    edge_pred = feature.canny(tensorflow.make_ndarray(y_pred), sigma=1)
     
     mse = K.mean(K.square(y_true-y_pred))
     canny = K.mean(K.square(edge_true-edge_pred))
