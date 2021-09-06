@@ -32,9 +32,8 @@ def canny_loss(y_true, y_pred):
 def mu8_loss(y_true, y_pred):
     mu_mse = 0.8
     mu_canny = 1-mu_mse
-    edge_true = feature.canny(y_true, sigma=1)
-    edge_pred = feature.canny(y_pred, sigma=1)
-    
+    edge_true = tensorflow.image.sobel_edges(y_true)
+    edge_pred = tensorflow.image.sobel_edges(y_pred)
     mse = K.mean(K.square(y_true-y_pred))
     canny = K.mean(K.square(edge_true-edge_pred))
     loss = mu_mse * mse + mu_canny * canny
