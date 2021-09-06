@@ -29,8 +29,8 @@ def canny_loss(y_true, y_pred):
     edge_pred = feature.canny(y_pred, sigma=1)
     return losses.MeanSquaredError(edge_true, edge_pred)
 
-def mu8_loss(y_true, y_pred):
-    mu_mse = 0.8
+def mu_loss(y_true, y_pred):
+    mu_mse = 0.7
     mu_canny = 1-mu_mse
     edge_true = tensorflow.image.sobel_edges(y_true)
     edge_pred = tensorflow.image.sobel_edges(y_pred)
@@ -47,7 +47,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 1
-    loss_group = [mu8_loss, smooth_L1_loss,
+    loss_group = [mu_loss, smooth_L1_loss,
                   losses.mean_squared_error, losses.mean_absolute_error]
 
     model_name = 'nac2ct'
@@ -65,7 +65,7 @@ def execute():
                                 upconv=True, residual=False)
 
     # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
-    model.compile(optimizer=Adam(learning_rate=1e-4), loss=mu8_loss, metrics=loss_group)
+    model.compile(optimizer=Adam(learning_rate=1e-4), loss=mu_loss, metrics=loss_group)
     model.summary()
 
     print('creating data generators')
