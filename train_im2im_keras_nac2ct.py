@@ -80,6 +80,8 @@ def execute():
         initial_epoch_fit = initial_epoch
         print('load model weights')
         model.load_weights("./" + model_name + "_model.h5")
+    else:
+        initial_epoch_fit = 0
 
     print('creating data generators')
     train_gen = deeprad_keras_tools.get_keras_npy_generator( os.path.join(X_folder,'train'), os.path.join(Y_folder,'train'),
