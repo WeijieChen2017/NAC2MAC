@@ -23,6 +23,11 @@ tensorflow.keras.backend.set_image_data_format('channels_last')
 def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
+def canny_loss(y_true, y_pred):
+    edge_true = feature.canny(y_true, sigma=1)
+    edge_pred = feature.canny(y_pred, sigma=1)
+    return losses.MeanSquaredError(edge_true, edge_pred)
+
 def execute():
     data_in_chan = 5
     data_out_chan = 1
@@ -31,6 +36,11 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 1
+    mu_sL1 = 0.8
+    mu_c = 1-mu_sL1
+    loss = mu_sL1 * smooth_L1_loss + mu_c * canny_loss
+    loss_group = [loss, smooth_L1_loss, canny_loss,
+                  losses.mean_squared_error, losses.mean_absolute_error]
 
     model_name = 'nac2ct'
 
@@ -41,14 +51,13 @@ def execute():
     # model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=64,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],
                                 out_ch=data_out_chan,
-                                start_ch=128, depth=4, inc_rate=2,
+                                start_ch=64, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
                                 batchnorm=False, maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
 
-
     # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
-    model.compile(optimizer=Adam(learning_rate=1e-4), loss=smooth_L1_loss, metrics=[smooth_L1_loss,losses.mean_squared_error,losses.mean_absolute_error])
+    model.compile(optimizer=Adam(learning_rate=1e-4), loss=loss, metrics=eval_loss_group)
     model.summary()
 
     print('creating data generators')
