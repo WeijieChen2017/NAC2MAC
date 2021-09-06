@@ -29,7 +29,7 @@ def canny_loss(y_true, y_pred):
 def mu8_loss(y_true, y_pred):
     mu_sL1 = 0.8
     mu_c = 1-mu_sL1
-    loss = mu_sL1 * smooth_L1_loss + mu_c * 
+    loss = mu_sL1 * smooth_L1_loss + mu_c * canny_loss
     return loss
 
 def execute():
