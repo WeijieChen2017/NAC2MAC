@@ -52,8 +52,8 @@ for fileXPath in fileList:
     print(fileXPath)
 
     fileYPath = fileXPath.replace("NPR", "CT")
-    os.system("cp " + fileXPath + " " + predFolderX)
-    os.system("cp " + fileYPath + " " + predFolderY)
+    # os.system("cp " + fileXPath + " " + predFolderX)
+    # os.system("cp " + fileYPath + " " + predFolderY)
 
     niftyX = nib.load(fileXPath)
     dataX = niftyX.get_fdata()
