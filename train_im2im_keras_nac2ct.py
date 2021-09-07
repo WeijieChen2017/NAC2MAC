@@ -53,7 +53,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 4
-    num_epochs = 6 + initial_epoch
+    num_epochs = 10 + initial_epoch
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
