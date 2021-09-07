@@ -168,8 +168,7 @@ class SimpleNpyGenerator(Sequence):
     def __len__(self):
         return len(self.X_filenames) // self.batch_size
 
-    def generate_slice(self, x_fns, y_fns)
-
+    def generate_slice(self, x_fns, y_fns):
         slice_x = np.load(x_fns)
         # batch_x = np.expand_dims(batch_x,3)
         slice_y = np.load(y_fns)
@@ -193,7 +192,7 @@ class SimpleNpyGenerator(Sequence):
         # batch_x = np.expand_dims(batch_x,3)
         batch_y = np.array( [ dataLoaderResults[i].get()[1] for i in range(self.batch_size) ] )
         # batch_y = np.expand_dims(batch_y,3)
-        
+
         return batch_x, batch_y
 
 class TensorBoardIm2ImCallback(Callback):
