@@ -47,7 +47,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 1
-    loss_group = [mu_loss, smooth_L1_loss, canny_loss,
+    loss_group = [mu_loss, smooth_L1_loss,
                   losses.mean_squared_error, losses.mean_absolute_error]
 
     model_name = 'nac2ct'
