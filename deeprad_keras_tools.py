@@ -1,7 +1,7 @@
 from PIL import Image
 from glob import glob
 from skimage.io import imread
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool as Pool
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras.callbacks import Callback
 
