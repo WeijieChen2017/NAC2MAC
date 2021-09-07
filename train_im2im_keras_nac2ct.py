@@ -43,7 +43,7 @@ def execute():
     modelTag = "nac2ct_4-64_5-1_xBN_mu5"
     continue_train = False
     initial_epoch = 0 # 0-9 at first, start from 10
-    loss_group = [mu_loss, smooth_L1_loss, canny_loss
+    loss_group = [mu_loss, smooth_L1_loss, canny_loss,
                   losses.mean_squared_error, losses.mean_absolute_error]
 
     data_in_chan = 5
