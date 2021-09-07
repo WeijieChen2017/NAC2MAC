@@ -1,9 +1,7 @@
 from PIL import Image
 from glob import glob
 from skimage.io import imread
-from concurrent.futures import ProcessPoolExecutor as Pool
-# from itertools import repeat
-from multiprocessing import current_process
+from multiprocessing import Pool
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras.callbacks import Callback
 
