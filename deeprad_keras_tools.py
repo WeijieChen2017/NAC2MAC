@@ -1,10 +1,12 @@
+from PIL import Image
 from glob import glob
 from skimage.io import imread
-import tensorflow
+from multiprocessing import Pool
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras.callbacks import Callback
-from PIL import Image
+
 import numpy as np
+import tensorflow
 import random
 import io
 import os
@@ -158,25 +160,41 @@ class SimpleNpyGenerator(Sequence):
         self.batch_size = batch_size
         self.shuffle = shuffle
 
-    def __len__(self):
-        return len(self.X_filenames) // self.batch_size
-
-    def __getitem__(self, idx):
-
         if self.shuffle:
             tempZip = list(zip(self.X_filenames, self.Y_filenames))
             random.shuffle(tempZip)
             self.X_filenames, self.Y_filenames = zip(*tempZip)
 
+    def __len__(self):
+        return len(self.X_filenames) // self.batch_size
+
+    def generate_slice(self, x_fns, y_fns)
+
+        slice_x = np.load(x_fns)
+        # batch_x = np.expand_dims(batch_x,3)
+        slice_y = np.load(y_fns)
+        # batch_y = np.expand_dims(batch_y,3)
+        return slice_x, slice_y
+
+    def __getitem__(self, idx):
+
         batch_x_fns = self.X_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
         batch_y_fns = self.Y_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-        batch_x = np.array( [ np.load(fn) for fn in batch_x_fns ] )
-        # batch_x = np.expand_dims(batch_x,3)
-        batch_y = np.array( [ np.load(fn) for fn in batch_y_fns ] )
-        # batch_y = np.expand_dims(batch_y,3)
+        dataLoaderResults = []
+        dataLoaderPool = Pool()
+        for i in range(self.batch_size):
+            args = (batch_x_fns[i], batch_y_fns[i])
+            dataLoaderResults.append(dataLoaderPool.apply_async(self.generate_slice, args=args))
+        dataLoaderPool.close()
+        dataLoaderPool.join()
 
-        return batch_x,batch_y
+        batch_x = np.array( [ dataLoaderResults[i].get()[0] for i in range(self.batch_size) ] )
+        # batch_x = np.expand_dims(batch_x,3)
+        batch_y = np.array( [ dataLoaderResults[i].get()[1] for i in range(self.batch_size) ] )
+        # batch_y = np.expand_dims(batch_y,3)
+        
+        return batch_x, batch_y
 
 class TensorBoardIm2ImCallback(Callback):
     """Keras callback for TensorBoard that writes image examples at the end of every epoch"""

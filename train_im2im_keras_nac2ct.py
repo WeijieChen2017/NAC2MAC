@@ -28,7 +28,7 @@ def canny_loss(y_true, y_pred):
     return losses.MeanSquaredError(edge_true, edge_pred)
 
 def mu_loss(y_true, y_pred):
-    mu_mse = 0.8
+    mu_mse = 0.5
     mu_canny = 1-mu_mse
     edge_true = tensorflow.image.sobel_edges(y_true)
     edge_pred = tensorflow.image.sobel_edges(y_pred)
@@ -40,7 +40,7 @@ def mu_loss(y_true, y_pred):
 def execute():
 
     model_name = 'nac2ct'
-    modelTag = "nac2ct_4-128_5-1_xBN_mu8"
+    modelTag = "nac2ct_4-128_5-1_xBN_mu5"
     continue_train = False
     initial_epoch = 0 # 0-9 at first, start from 10
     loss_group = [mu_loss, smooth_L1_loss,
