@@ -23,12 +23,12 @@ def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
 def canny_loss(y_true, y_pred):
-    edge_true = feature.canny(tensorflow.make_ndarray(y_true), sigma=1)
-    edge_pred = feature.canny(tensorflow.make_ndarray(y_pred), sigma=1)
+    edge_true = tensorflow.image.sobel_edges(y_true)
+    edge_pred = tensorflow.image.sobel_edges(y_pred)
     return losses.MeanSquaredError(edge_true, edge_pred)
 
 def mu_loss(y_true, y_pred):
-    mu_mse = 0.2
+    mu_mse = 0.5
     mu_canny = 1-mu_mse
     edge_true = tensorflow.image.sobel_edges(y_true)
     edge_pred = tensorflow.image.sobel_edges(y_pred)
@@ -40,10 +40,10 @@ def mu_loss(y_true, y_pred):
 def execute():
 
     model_name = 'nac2ct'
-    modelTag = "nac2ct_4-64_5-1_xBN_mu2"
+    modelTag = "nac2ct_4-64_5-1_xBN_mu5"
     continue_train = False
     initial_epoch = 0 # 0-9 at first, start from 10
-    loss_group = [mu_loss, smooth_L1_loss,
+    loss_group = [mu_loss, smooth_L1_loss, canny_loss
                   losses.mean_squared_error, losses.mean_absolute_error]
 
     data_in_chan = 5

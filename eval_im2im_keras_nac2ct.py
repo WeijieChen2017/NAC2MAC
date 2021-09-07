@@ -25,12 +25,12 @@ def smooth_L1_loss(y_true, y_pred):
     return losses.huber(y_true, y_pred)
 
 def canny_loss(y_true, y_pred):
-    edge_true = feature.canny(y_true, sigma=1)
-    edge_pred = feature.canny(y_pred, sigma=1)
+    edge_true = tensorflow.image.sobel_edges(y_true)
+    edge_pred = tensorflow.image.sobel_edges(y_pred)
     return losses.MeanSquaredError(edge_true, edge_pred)
 
 def mu_loss(y_true, y_pred):
-    mu_mse = 0.2
+    mu_mse = 0.5
     mu_canny = 1-mu_mse
     edge_true = tensorflow.image.sobel_edges(y_true)
     edge_pred = tensorflow.image.sobel_edges(y_pred)
@@ -47,7 +47,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 1
-    loss_group = [mu_loss, smooth_L1_loss,
+    loss_group = [mu_loss, smooth_L1_loss, canny_loss
                   losses.mean_squared_error, losses.mean_absolute_error]
 
     model_name = 'nac2ct'
