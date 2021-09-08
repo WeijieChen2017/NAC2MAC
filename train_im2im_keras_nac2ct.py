@@ -64,7 +64,7 @@ def execute():
     print('creating model')
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],
                                 out_ch=data_out_chan,
-                                start_ch=128, depth=4, inc_rate=2,
+                                start_ch=64, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
                                 batchnorm=False, maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
@@ -107,10 +107,10 @@ def execute():
     model.fit(  train_gen,
                 validation_data=val_gen,
                 epochs=num_epochs,
-                use_multiprocessing=True,
+                use_multiprocessing=False,
                 max_queue_size=20,
                 initial_epoch=initial_epoch_fit,
-                workers=4,
+                workers=batch_size,
                 callbacks=[history, modelCheckpoint] )#, tensorboardimage, tensorboard
 
     model.save(model_name + '_model.h5')

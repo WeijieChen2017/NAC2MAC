@@ -1,12 +1,10 @@
-from PIL import Image
 from glob import glob
 from skimage.io import imread
-from multiprocessing import Pool
+import tensorflow
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras.callbacks import Callback
-
+from PIL import Image
 import numpy as np
-import tensorflow
 import random
 import io
 import os
@@ -118,7 +116,6 @@ class SimpleKerasGenerator(Sequence):
 
         return batch_x,batch_y
 
-
 def get_keras_npy_generator( X_folder, Y_folder, batch_size, shuffle=False ):
     """
     A function to return a SimpleKerasGenerator from .tif or .tiff images found within specified folders
@@ -133,11 +130,6 @@ def get_keras_npy_generator( X_folder, Y_folder, batch_size, shuffle=False ):
     """
     X_files = sorted(glob(os.path.join(X_folder,'*.npy'),recursive=True))
     Y_files = sorted(glob(os.path.join(Y_folder,'*.npy'),recursive=True))
-
-    if shuffle:
-        temp = list(zip(X_files, Y_files))
-        random.shuffle(temp)
-        X_files, Y_files = zip(*temp)
 
     print('keras tiff generator found {} files for X and {} files for Y'.format(len(X_files),len(Y_files)))
 
@@ -160,40 +152,25 @@ class SimpleNpyGenerator(Sequence):
         self.batch_size = batch_size
         self.shuffle = shuffle
 
-        if self.shuffle:
-            tempZip = list(zip(self.X_filenames, self.Y_filenames))
-            random.shuffle(tempZip)
-            self.X_filenames, self.Y_filenames = zip(*tempZip)
+        if shuffle:
+            temp = list(zip(self.X_filenames, self.Y_filenames))
+            random.shuffle(temp)
+            self.X_filenames, self.Y_filenames = zip(*temp)
 
     def __len__(self):
         return len(self.X_filenames) // self.batch_size
-
-    def generate_slice(self, x_fns, y_fns):
-        slice_x = np.load(x_fns)
-        # batch_x = np.expand_dims(batch_x,3)
-        slice_y = np.load(y_fns)
-        # batch_y = np.expand_dims(batch_y,3)
-        return slice_x, slice_y
 
     def __getitem__(self, idx):
 
         batch_x_fns = self.X_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
         batch_y_fns = self.Y_filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-        dataLoaderResults = []
-        dataLoaderPool = Pool()
-        for i in range(self.batch_size):
-            args = (batch_x_fns[i], batch_y_fns[i])
-            dataLoaderResults.append(dataLoaderPool.apply_async(self.generate_slice, args=args))
-        dataLoaderPool.close()
-        dataLoaderPool.join()
-
-        batch_x = np.array( [ dataLoaderResults[i].get()[0] for i in range(self.batch_size) ] )
+        batch_x = np.array( [ np.load(fn) for fn in batch_x_fns ] )
         # batch_x = np.expand_dims(batch_x,3)
-        batch_y = np.array( [ dataLoaderResults[i].get()[1] for i in range(self.batch_size) ] )
+        batch_y = np.array( [ np.load(fn) for fn in batch_y_fns ] )
         # batch_y = np.expand_dims(batch_y,3)
 
-        return batch_x, batch_y
+        return batch_x,batch_y
 
 class TensorBoardIm2ImCallback(Callback):
     """Keras callback for TensorBoard that writes image examples at the end of every epoch"""
