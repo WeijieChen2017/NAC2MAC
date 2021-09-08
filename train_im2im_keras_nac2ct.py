@@ -104,14 +104,14 @@ def execute():
     # tensorboardimage = deeprad_keras_tools.TensorBoardIm2ImCallback(log_dir=tblogdir,X=X_progress,Y=Y_progress)
 
     print('fitting model')
-    model.fit_generator(train_gen,
-                        validation_data=val_gen,
-                        epochs=num_epochs,
-                        use_multiprocessing=True,
-                        max_queue_size=20,
-                        initial_epoch=initial_epoch_fit,
-                        workers=batch_size,
-                        callbacks=[history, modelCheckpoint] )#, tensorboardimage, tensorboard
+    model.fit(  train_gen,
+                validation_data=val_gen,
+                epochs=num_epochs,
+                use_multiprocessing=True,
+                max_queue_size=20,
+                initial_epoch=initial_epoch_fit,
+                workers=batch_size,
+                callbacks=[history, modelCheckpoint] )#, tensorboardimage, tensorboard
 
     model.save(model_name + '_model.h5')
 
