@@ -107,10 +107,10 @@ def execute():
     model.fit_generator(train_gen,
                         validation_data=val_gen,
                         epochs=num_epochs,
-                        use_multiprocessing=True,
+                        use_multiprocessing=False,
                         max_queue_size=20,
                         initial_epoch=initial_epoch_fit,
-                        workers=batch_size,
+                        workers=1,
                         callbacks=[history, modelCheckpoint] )#, tensorboardimage, tensorboard
 
     model.save(model_name + '_model.h5')
