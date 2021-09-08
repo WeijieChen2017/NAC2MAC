@@ -1,6 +1,6 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, Concatenate, Input, MaxPooling2D, UpSampling2D, Dropout, BatchNormalization, Masking
-from tensorflow_addons.layers import InstanceNormalization
+
 '''
 from: https://github.com/pietz/unet-keras/blob/master/unet.py
 
@@ -14,65 +14,55 @@ depth: zero indexed depth of the U-structure
 inc_rate: rate at which the conv channels will increase
 activation: activation function after convolutions
 dropout: amount of dropout in the contracting part
-normtype: adds Batch Normalization if true
+batchnorm: adds Batch Normalization if true
 maxpool: use strided conv instead of maxpooling if false
 upconv: use transposed conv instead of upsamping + conv if false
 residual: add residual connections around each conv block if true
 '''
-def normLayer(normtype, n):
-    if normtype == "batch_norm":
-        return BatchNormalization()(n)
-    if normtype == "instance_norm":
-        return InstanceNormalization(axis=3, 
-                                     center=True, scale=True, 
-                                     beta_initializer="random_uniform",
-                                     gamma_initializer="random_uniform")(n)
-    if normtype == "none":
-        return n
 
-def conv_block(m, dim, acti, normtype, res, do=0, inorm=True):
+def conv_block(m, dim, acti, bn, res, do=0):
     n = Conv2D(dim, 3, activation=acti, padding='same')(m)
-    n = normLayer(normtype, n)
+    n = BatchNormalization()(n) if bn else n
     n = Dropout(do)(n) if do else n
     n = Conv2D(dim, 3, activation=acti, padding='same')(n)
-    n = normLayer(normtype, n)
+    n = BatchNormalization()(n) if bn else n
     return Concatenate()([m, n]) if res else n
 
-def level_block(m, dim, depth, inc, acti, do, normtype, mp, up, res):
+def level_block(m, dim, depth, inc, acti, do, bn, mp, up, res):
     if depth > 0:
-        n = conv_block(m, dim, acti, normtype, res)
+        n = conv_block(m, dim, acti, bn, res)
         m = MaxPooling2D()(n) if mp else Conv2D(dim, 3, strides=2, padding='same')(n)
-        m = level_block(m, int(inc*dim), depth-1, inc, acti, do, normtype, mp, up, res)
+        m = level_block(m, int(inc*dim), depth-1, inc, acti, do, bn, mp, up, res)
         if up:
             m = UpSampling2D()(m)
             m = Conv2D(dim, 2, activation=acti, padding='same')(m)
         else:
             m = Conv2DTranspose(dim, 3, strides=2, activation=acti, padding='same')(m)
         n = Concatenate()([n, m])
-        m = conv_block(n, dim, acti, normtype, res)
+        m = conv_block(n, dim, acti, bn, res)
     else:
-        m = conv_block(m, dim, acti, normtype, res, do)
+        m = conv_block(m, dim, acti, bn, res, do)
     return m
 
 def UNet(img_shape, out_ch=1, start_ch=64, depth=4, inc_rate=2., activation='relu', 
-         dropout=0.5, normtype="instance_norm", maxpool=True, upconv=True, residual=False):
+         dropout=0.5, batchnorm=False, maxpool=True, upconv=True, residual=False):
     i = Input(shape=img_shape)
-    o = level_block(i, start_ch, depth, inc_rate, activation, dropout, normtype, maxpool, upconv, residual)
+    o = level_block(i, start_ch, depth, inc_rate, activation, dropout, batchnorm, maxpool, upconv, residual)
     o = Conv2D(out_ch, 1, activation='sigmoid')(o)
     return Model(inputs=i, outputs=o)
 
 def UNetContinuous(img_shape, out_ch=1, start_ch=64, depth=4, inc_rate=2., activation='relu',
-         dropout=0.5, normtype="instance_norm", maxpool=True, upconv=True, residual=False):
+         dropout=0.5, batchnorm=False, maxpool=True, upconv=True, residual=False):
     i = Input(shape=img_shape)
-    o = level_block(i, start_ch, depth, inc_rate, activation, dropout, normtype, maxpool, upconv, residual)
+    o = level_block(i, start_ch, depth, inc_rate, activation, dropout, batchnorm, maxpool, upconv, residual)
     o = Conv2D(out_ch, 1, activation='linear')(o)
     return Model(inputs=i, outputs=o)
 
 def UNetContinuousMasked(img_shape, out_ch=1, start_ch=64, depth=4, inc_rate=2., activation='relu',
-         dropout=0.5, normtype="instance_norm", maxpool=True, upconv=True, residual=False, mask_value=0.0):
+         dropout=0.5, batchnorm=False, maxpool=True, upconv=True, residual=False, mask_value=0.0):
     #i = Input(shape=img_shape)
     i = Masking(mask_value,input_shape=img_shape)
-    o = level_block(i, start_ch, depth, inc_rate, activation, dropout, normtype, maxpool, upconv, residual)
+    o = level_block(i, start_ch, depth, inc_rate, activation, dropout, batchnorm, maxpool, upconv, residual)
     o = Conv2D(out_ch, 1, activation='linear')(o)
     return Model(inputs=i, outputs=o)
 

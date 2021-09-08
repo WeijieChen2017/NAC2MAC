@@ -59,9 +59,9 @@ def execute():
     # model = Unet.UNetContinuous([model_x,model_y,data_in_chan],out_ch=data_out_chan,start_ch=64,depth=4,inc_rate=2.,activation='relu',dropout=0.5,batchnorm=True,maxpool=True,upconv=True,residual=False)
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],
                                 out_ch=data_out_chan,
-                                start_ch=128, depth=4, inc_rate=2,
+                                start_ch=64, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
-                                batchnorm=False, maxpool=True, # turn off batchnorm
+                                normtype="none", maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
 
     # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
@@ -74,7 +74,7 @@ def execute():
                                                             batch_size )
     
     print('load model weights')
-    model.load_weights("./" + model_name + "_model.h5")
+    model.load_weights("./" + model_name + "_weights.h5")
 
     print('model eval')
     predLoss = model.evaluate(test_gen, batch_size=batch_size, verbose=1, return_dict=True)

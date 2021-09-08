@@ -66,7 +66,7 @@ def execute():
                                 out_ch=data_out_chan,
                                 start_ch=64, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
-                                batchnorm=False, maxpool=True, # turn off batchnorm
+                                normtype="instance_norm", maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
     # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
     # data_input_shape: The shape of the input data (from DeepRad). This is always a length two tuple [e.g., (M,N*C)]
