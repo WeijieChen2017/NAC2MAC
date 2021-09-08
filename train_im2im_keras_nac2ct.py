@@ -40,7 +40,7 @@ def mu_loss(y_true, y_pred):
 def execute():
 
     model_name = 'nac2ct'
-    modelTag = "nac2ct_4-128_5-1_xBN_mu5"
+    modelTag = "nac2ct_4-64_5-1_xBN_mu5"
     continue_train = False
     initial_epoch = 0 # 0-9 at first, start from 10
     loss_group = [mu_loss, smooth_L1_loss,
@@ -52,8 +52,8 @@ def execute():
     data_y = 512   
     model_x = 512
     model_y = 512
-    batch_size = 4
-    num_epochs = 10 + initial_epoch
+    batch_size = 8
+    num_epochs = 30 + initial_epoch
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
@@ -107,10 +107,10 @@ def execute():
     model.fit_generator(train_gen,
                         validation_data=val_gen,
                         epochs=num_epochs,
-                        use_multiprocessing=False,
+                        use_multiprocessing=True,
                         max_queue_size=20,
                         initial_epoch=initial_epoch_fit,
-                        workers=1,
+                        workers=batch_size,
                         callbacks=[history, modelCheckpoint] )#, tensorboardimage, tensorboard
 
     model.save(model_name + '_model.h5')
