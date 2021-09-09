@@ -131,7 +131,7 @@ def get_keras_npy_generator( X_folder, Y_folder, batch_size, shuffle=False ):
     X_files = sorted(glob(os.path.join(X_folder,'*.npy'),recursive=True))
     Y_files = sorted(glob(os.path.join(Y_folder,'*.npy'),recursive=True))
 
-    print('keras tiff generator found {} files for X and {} files for Y'.format(len(X_files),len(Y_files)))
+    print('keras tiff generator found {} files for X and {} files for Y'.format(len(X_files), len(Y_files)))
 
     return SimpleNpyGenerator( X_files, Y_files, batch_size , shuffle )
 
@@ -170,7 +170,9 @@ class SimpleNpyGenerator(Sequence):
         batch_y = np.array( [ np.load(fn) for fn in batch_y_fns ] )
         # batch_y = np.expand_dims(batch_y,3)
 
-        return batch_x,batch_y
+        print(batch_x.shape, batch_y.shape)
+
+        return batch_x, batch_y
 
 class TensorBoardIm2ImCallback(Callback):
     """Keras callback for TensorBoard that writes image examples at the end of every epoch"""
