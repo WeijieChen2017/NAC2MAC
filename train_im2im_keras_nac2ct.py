@@ -42,8 +42,11 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     edge_true = K.sqrt(K.mean(K.square(sobel_true), axis=-1))
     edge_pred = K.sqrt(K.mean(K.square(sobel_pred), axis=-1))
 
-    edge_true_blur = GaussianBlur(edge_true, size=3)
-    edge_pred_blur = GaussianBlur(edge_pred, size=3)
+    blur_true = GaussianBlur(size=3)
+    blur_pred = GaussianBlur(size=3)
+    
+    edge_true_blur = blur_true.apply(edge_true)
+    edge_pred_blur = blur_pred.apply(edge_pred)
     print(edge_true_blur.get_shape())
     print(edge_pred_blur.get_shape())
     canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
