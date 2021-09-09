@@ -18,6 +18,7 @@ from skimage import feature
 import numpy
 import Unet
 
+tensorflow.config.run_functions_eagerly(True)
 tensorflow.keras.backend.set_image_data_format('channels_last')
 
 def smooth_L1_loss(y_true, y_pred):
