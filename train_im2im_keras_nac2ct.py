@@ -32,9 +32,12 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     mu_huberL1 = 0.8
     mu_canny = 1-mu_huberL1
 
+    print(y_true.get_shape().as_list())
+    print(y_pred.get_shape().as_list())  
+
     # sobel output [batch_size, h, w, d, 2] in y-direction[0] / y-direction[1] 
     sobel_true = tensorflow.image.sobel_edges(y_true) 
-    sobel_pred = tensorflow.image.sobel_edges(y_true)
+    sobel_pred = tensorflow.image.sobel_edges(y_pred)
 
     print(sobel_true.get_shape().as_list())
     print(sobel_pred.get_shape().as_list())    
