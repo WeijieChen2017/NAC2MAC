@@ -28,24 +28,43 @@ def canny_loss(y_true, y_pred):
     edge_pred = tensorflow.image.sobel_edges(y_pred)
     return losses.MeanSquaredError(edge_true, edge_pred)
 
-def mu_loss(y_true, y_pred):
-    mu_mse = 0.8
+def huber_loss(y_true, y_pred, clip_delta=1.0):
+  error = y_true - y_pred
+  cond  = tf.keras.backend.abs(error) < clip_delta
+
+  squared_loss = 0.5 * tf.keras.backend.square(error)
+  linear_loss  = clip_delta * (tf.keras.backend.abs(error) - 0.5 * clip_delta)
+
+  return tf.where(cond, squared_loss, linear_loss)
+
+'''
+ ' Same as above but returns the mean loss.
+'''
+def huber_loss_mean(y_true, y_pred, clip_delta=1.0):
+  return tf.keras.backend.mean(huber_loss(y_true, y_pred, clip_delta))
+
+
+def mu_loss(y_true, y_pred, clip_delta=1.0):
+    mu_huberL1 = 0.8
     mu_canny = 1-mu_mse
+
     edge_true = tensorflow.image.sobel_edges(y_true)
     edge_pred = tensorflow.image.sobel_edges(y_pred)
-
     edge_true_blur = gaussian_filter2d(edge_true)
     edge_pred_blur = gaussian_filter2d(edge_pred)
-
-    mse = K.mean(K.square(y_true-y_pred))
     canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
-    loss = mu_mse * mse + mu_canny * canny
-    return loss
+
+    THRESHOLD = K.variable(1.0)
+    mae = K.abs(y_true-y_pred)
+    flag = K.greater(mae, THRESHOLD)
+    huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)), axis=-1)
+    
+    return mu_huberL1 * huberL1 + mu_canny * canny
 
 def execute():
 
     model_name = 'nac2ct'
-    modelTag = "nac2ct_4-64_5-1_IN_mu8"
+    modelTag = "nac2ct_4-64_5-1_IN_mu8_GSG1"
     continue_train = False
     initial_epoch = 0 # 0-9 at first, start from 10
     loss_group = [mu_loss, smooth_L1_loss,

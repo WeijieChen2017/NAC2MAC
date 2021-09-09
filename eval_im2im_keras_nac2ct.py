@@ -30,19 +30,22 @@ def canny_loss(y_true, y_pred):
     edge_pred = tensorflow.image.sobel_edges(y_pred)
     return losses.MeanSquaredError(edge_true, edge_pred)
 
-def mu_loss(y_true, y_pred):
-    mu_mse = 0.8
+def mu_loss(y_true, y_pred, clip_delta=1.0):
+    mu_huberL1 = 0.8
     mu_canny = 1-mu_mse
+
     edge_true = tensorflow.image.sobel_edges(y_true)
     edge_pred = tensorflow.image.sobel_edges(y_pred)
-
     edge_true_blur = gaussian_filter2d(edge_true)
     edge_pred_blur = gaussian_filter2d(edge_pred)
-
-    mse = K.mean(K.square(y_true-y_pred))
     canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
-    loss = mu_mse * mse + mu_canny * canny
-    return loss
+
+    THRESHOLD = K.variable(1.0)
+    mae = K.abs(y_true-y_pred)
+    flag = K.greater(mae, THRESHOLD)
+    huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)), axis=-1)
+    
+    return mu_huberL1 * huberL1 + mu_canny * canny
 
 def execute():
     data_in_chan = 5
