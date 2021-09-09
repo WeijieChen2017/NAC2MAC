@@ -44,17 +44,19 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
 
     blur_true = GaussianBlur(size=3)
     blur_pred = GaussianBlur(size=3)
-    
+
     edge_true_blur = blur_true.apply(edge_true)
     edge_pred_blur = blur_pred.apply(edge_pred)
-    print(edge_true_blur.get_shape())
-    print(edge_pred_blur.get_shape())
+    # print(edge_true_blur.get_shape())
+    # print(edge_pred_blur.get_shape())
     canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
 
-    THRESHOLD = K.variable(1.0)
-    mae = K.abs(y_true-y_pred)
-    flag = K.greater(mae, THRESHOLD)
-    huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)), axis=-1)
+    # THRESHOLD = K.variable(1.0)
+    # mae = K.abs(y_true-y_pred)
+    # flag = K.greater(mae, THRESHOLD)
+    # huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)), axis=-1)
+
+    huberL1 = K.mean(K.square(y_pred - y_true))
 
     return mu_huberL1 * huberL1 + mu_canny * canny
 
