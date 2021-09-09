@@ -13,6 +13,7 @@ from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import backend as K
 from tensorflow.keras import losses
+from tensorflow_addons.image import gaussian_filter2d
 from skimage import feature
 import numpy
 import Unet
@@ -32,8 +33,12 @@ def mu_loss(y_true, y_pred):
     mu_canny = 1-mu_mse
     edge_true = tensorflow.image.sobel_edges(y_true)
     edge_pred = tensorflow.image.sobel_edges(y_pred)
+
+    edge_true_blur = gaussian_filter2d(edge_true)
+    edge_pred_blur = gaussian_filter2d(edge_pred)
+
     mse = K.mean(K.square(y_true-y_pred))
-    canny = K.mean(K.square(edge_true-edge_pred))
+    canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
     loss = mu_mse * mse + mu_canny * canny
     return loss
 
