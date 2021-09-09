@@ -34,6 +34,10 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
 
     edge_true = tensorflow.image.sobel_edges(y_true)
     edge_pred = tensorflow.image.sobel_edges(y_pred)
+
+    print(edge_true.get_shape().as_list())
+    print(edge_pred.get_shape().as_list())    
+
     edge_true_blur = gaussian_filter2d(edge_true)
     edge_pred_blur = gaussian_filter2d(edge_pred)
     canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
