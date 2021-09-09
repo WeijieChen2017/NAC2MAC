@@ -56,8 +56,6 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     flag = K.greater(mae, THRESHOLD)
     huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)/2), axis=-1)
 
-    # huberL1 = K.mean(K.square(y_pred - y_true))
-
     return mu_huberL1 * huberL1 + mu_canny * canny
 
 def execute():
@@ -76,7 +74,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 4
-    num_epochs = 25 + initial_epoch
+    num_epochs = 20 + initial_epoch
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"

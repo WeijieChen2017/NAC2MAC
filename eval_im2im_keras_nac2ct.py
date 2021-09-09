@@ -7,6 +7,7 @@ from PIL import Image
 from time import time
 
 from matplotlib import pyplot as plt
+from train_im2im_keras_nac2ct import mu_loss, smooth_L1_loss
 
 import tensorflow
 from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard
@@ -21,37 +22,6 @@ import glob
 import os
 
 tensorflow.keras.backend.set_image_data_format('channels_last')
-
-def smooth_L1_loss(y_true, y_pred):
-    return losses.huber(y_true, y_pred)
-
-def canny_loss(y_true, y_pred):
-    edge_true = tensorflow.image.sobel_edges(y_true)
-    edge_pred = tensorflow.image.sobel_edges(y_pred)
-    return losses.MeanSquaredError(edge_true, edge_pred)
-
-def mu_loss(y_true, y_pred, clip_delta=1.0):
-    mu_huberL1 = 0.8
-    mu_canny = 1-mu_huberL1
-
-    # sobel output [batch_size, h, w, d, 2] in y-direction[0] / y-direction[1] 
-    sobel_true = tensorflow.image.sobel_edges(y_true) 
-    sobel_pred = tensorflow.image.sobel_edges(y_pred)
-
-    # edge = square_root(x^2 + y^2)
-    edge_true = K.sqrt(K.mean(K.square(sobel_true), axis=-1))
-    edge_pred = K.sqrt(K.mean(K.square(sobel_pred), axis=-1))
-
-    edge_true_blur = gaussian_filter2d(edge_true)
-    edge_pred_blur = gaussian_filter2d(edge_pred)
-    canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
-
-    THRESHOLD = K.variable(1.0)
-    mae = K.abs(y_true-y_pred)
-    flag = K.greater(mae, THRESHOLD)
-    huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)), axis=-1)
-
-    return mu_huberL1 * huberL1 + mu_canny * canny
 
 def execute():
     data_in_chan = 5
