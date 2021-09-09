@@ -34,7 +34,10 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
 
     # sobel output [batch_size, h, w, d, 2] in y-direction[0] / y-direction[1] 
     sobel_true = tensorflow.image.sobel_edges(y_true) 
-    sobel_pred = tensorflow.image.sobel_edges(y_true)    
+    sobel_pred = tensorflow.image.sobel_edges(y_true)
+
+    print(sobel_true.get_shape().as_list())
+    print(sobel_pred.get_shape().as_list())    
 
     # edge = square_root(x^2 + y^2)
     edge_true = K.sqrt(K.mean(K.square(sobel_true), axis=-1))
