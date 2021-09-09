@@ -39,8 +39,8 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     sobel_pred = tensorflow.image.sobel_edges(y_pred)
 
     # edge = square_root(x^2 + y^2)
-    edge_true = K.sqrt(K.mean(K.square(sobel_true), axis=-1))
-    edge_pred = K.sqrt(K.mean(K.square(sobel_pred), axis=-1))
+    edge_true = K.sqrt(K.mean(K.square(sobel_true), axis=-1) + 1e-10)
+    edge_pred = K.sqrt(K.mean(K.square(sobel_pred), axis=-1) + 1e-10)
 
     blur_true = GaussianBlur(size=3)
     blur_pred = GaussianBlur(size=3)
@@ -54,7 +54,7 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     THRESHOLD = K.variable(1.0)
     mae = K.abs(y_true-y_pred)
     flag = K.greater(mae, THRESHOLD)
-    huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)), axis=-1)
+    huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)/2), axis=-1)
 
     # huberL1 = K.mean(K.square(y_pred - y_true))
 
