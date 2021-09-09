@@ -37,8 +37,8 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     sobel_pred = tensorflow.image.sobel_edges(y_true)    
 
     # edge = square_root(x^2 + y^2)
-    edge_true = K.sqrt(K.mean(K.square(sobel_true)))
-    edge_pred = K.sqrt(K.mean(K.square(sobel_pred)))
+    edge_true = K.sqrt(K.mean(K.square(sobel_true), axis=-1))
+    edge_pred = K.sqrt(K.mean(K.square(sobel_pred), axis=-1))
 
     print(edge_true.get_shape().as_list())
     print(edge_pred.get_shape().as_list())    
