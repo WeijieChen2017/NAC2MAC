@@ -60,7 +60,7 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
 
     NaN = []
     checkList = [y_true, y_pred, sobel_true, sobel_pred, edge_true, edge_pred,
-                 edge_true_blur, edge_pred_blur, canny, MSE]
+                 edge_true_blur, edge_pred_blur, canny, huberL1]
     for tensor in checkList:
         if tensorflow.math.is_nan(tensor):
             NaN.append("NaN")
