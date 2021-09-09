@@ -70,7 +70,7 @@ class GaussianBlur(Blur):
         coef = tf.cast(coef, tf.float32)
         kernel = tf.einsum('i,j->ij', coef, coef)
         kernel = kernel[:, :, tf.newaxis, tf.newaxis]
-        kernel = tf.tile(kernel, [1, 1, 3, 1])
+        kernel = tf.tile(kernel, [1, 1, 1, 1])
         return kernel
 
     @staticmethod
