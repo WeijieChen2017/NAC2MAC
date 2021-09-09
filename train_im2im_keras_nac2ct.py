@@ -67,7 +67,7 @@ def execute():
     data_y = 512   
     model_x = 512
     model_y = 512
-    batch_size = 8
+    batch_size = 4
     num_epochs = 25 + initial_epoch
 
     X_folder = "./data_train/X/"
@@ -122,7 +122,7 @@ def execute():
     model.fit(  train_gen,
                 validation_data=val_gen,
                 epochs=num_epochs,
-                use_multiprocessing=True,
+                use_multiprocessing=False,
                 max_queue_size=20,
                 initial_epoch=initial_epoch_fit,
                 workers=batch_size,
