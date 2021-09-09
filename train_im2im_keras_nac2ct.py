@@ -7,6 +7,7 @@ from PIL import Image
 from time import time
 
 from matplotlib import pyplot as plt
+from tensorblur.gaussian import GaussianBlur
 
 import tensorflow
 from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard
@@ -41,9 +42,11 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     edge_true = K.sqrt(K.mean(K.square(sobel_true), axis=-1))
     edge_pred = K.sqrt(K.mean(K.square(sobel_pred), axis=-1))
 
-    # edge_true_blur = gaussian_filter2d(edge_true)
-    # edge_pred_blur = gaussian_filter2d(edge_pred)
-    canny = K.mean(K.square(edge_true-edge_pred))
+    edge_true_blur = GaussianBlur(edge_true, size=3)
+    edge_pred_blur = GaussianBlur(edge_pred, size=3)
+    print(edge_true_blur.get_shape())
+    print(edge_pred_blur.get_shape())
+    canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
 
     THRESHOLD = K.variable(1.0)
     mae = K.abs(y_true-y_pred)
