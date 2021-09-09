@@ -58,7 +58,7 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
 
     # huberL1 = K.mean(K.square(y_pred - y_true))
 
-    return mu_huberL1 * huberL1 # + mu_canny * canny
+    return mu_huberL1 * huberL1 + mu_canny * canny
 
 def execute():
 
