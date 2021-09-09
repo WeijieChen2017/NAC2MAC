@@ -51,12 +51,23 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     # print(edge_pred_blur.get_shape())
     canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
 
-    # THRESHOLD = K.variable(1.0)
-    # mae = K.abs(y_true-y_pred)
-    # flag = K.greater(mae, THRESHOLD)
-    # huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)), axis=-1)
+    THRESHOLD = K.variable(1.0)
+    mae = K.abs(y_true-y_pred)
+    flag = K.greater(mae, THRESHOLD)
+    huberL1 = K.mean(K.switch(flag, (mae - 0.5), K.pow(mae, 2)), axis=-1)
 
-    huberL1 = K.mean(K.square(y_pred - y_true))
+    MSE = K.mean(K.square(y_pred - y_true))
+
+    NaN = []
+    checkList = [y_true, y_pred, sobel_true, sobel_pred, edge_true, edge_pred,
+                 edge_true_blur, edge_pred_blur, canny, mae, flag, huberL1, MSE]
+    for tensor in checkList:
+        if tensorflow.math.is_nan(tensor):
+            NaN.append("NaN")
+        else:
+            NaN.append("Good")
+    print(NaN)
+
 
     return mu_huberL1 * huberL1 + mu_canny * canny
 
