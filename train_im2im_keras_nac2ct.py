@@ -42,14 +42,14 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
     edge_true = K.sqrt(K.mean(K.square(sobel_true), axis=-1) + 1e-10)
     edge_pred = K.sqrt(K.mean(K.square(sobel_pred), axis=-1) + 1e-10)
 
-    blur_true = GaussianBlur(size=3)
-    blur_pred = GaussianBlur(size=3)
+    # blur_true = GaussianBlur(size=3)
+    # blur_pred = GaussianBlur(size=3)
 
-    edge_true_blur = blur_true.apply(edge_true)
-    edge_pred_blur = blur_pred.apply(edge_pred)
+    # edge_true_blur = blur_true.apply(edge_true)
+    # edge_pred_blur = blur_pred.apply(edge_pred)
     # print(edge_true_blur.get_shape())
     # print(edge_pred_blur.get_shape())
-    canny = K.mean(K.square(edge_true_blur-edge_pred_blur))
+    canny = K.mean(K.square(edge_true-edge_pred))
 
     THRESHOLD = K.variable(1.0)
     mae = K.abs(y_true-y_pred)
@@ -61,7 +61,7 @@ def mu_loss(y_true, y_pred, clip_delta=1.0):
 def execute():
 
     model_name = 'nac2ct'
-    modelTag = "nac2ct_4-64_5-1_IN_mu8_GSG1"
+    modelTag = "nac2ct_4-128_5-1_mu8"
     continue_train = False
     initial_epoch = 0 # 0-9 at first, start from 10
     loss_group = [mu_loss, smooth_L1_loss,
@@ -74,7 +74,7 @@ def execute():
     model_x = 512
     model_y = 512
     batch_size = 4
-    num_epochs = 20 + initial_epoch
+    num_epochs = 10 + initial_epoch
 
     X_folder = "./data_train/X/"
     Y_folder = "./data_train/Y/"
@@ -85,9 +85,9 @@ def execute():
     print('creating model')
     model = Unet.UNetContinuous([model_x,model_y,data_in_chan],
                                 out_ch=data_out_chan,
-                                start_ch=64, depth=4, inc_rate=2,
+                                start_ch=128, depth=4, inc_rate=2,
                                 activation='relu', dropout=0.5,
-                                normtype="instance_norm", maxpool=True, # turn off batchnorm
+                                normtype="none", maxpool=True, # turn off batchnorm
                                 upconv=True, residual=False)
     # model = deeprad_keras_tools.wrap_model( model, (data_x,data_y,1), (data_x,data_y,1), (model_x,model_y,1), (model_x,model_y,1) )    
     # data_input_shape: The shape of the input data (from DeepRad). This is always a length two tuple [e.g., (M,N*C)]
